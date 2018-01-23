@@ -1,0 +1,99 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myTireLabel">Create or edit a Tire</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!tire.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="tire.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_title">Title</label>
+            <input type="text" class="form-control" name="title" id="field_title"
+                [(ngModel)]="tire.title" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_isStrong">Is Strong</label>
+            <input type="checkbox" class="form-control" name="isStrong" id="field_isStrong"
+                [(ngModel)]="tire.isStrong" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_radius">Radius</label>
+            <input type="number" class="form-control" name="radius" id="field_radius"
+                [(ngModel)]="tire.radius" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_releaseYear">Release Year</label>
+            <input type="text" class="form-control" name="releaseYear" id="field_releaseYear"
+                [(ngModel)]="tire.releaseYear" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_size">Size</label>
+            <input type="text" class="form-control" name="size" id="field_size"
+                [(ngModel)]="tire.size" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_mark">Mark</label>
+            <input type="text" class="form-control" name="mark" id="field_mark"
+                [(ngModel)]="tire.mark" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_model">Model</label>
+            <input type="text" class="form-control" name="model" id="field_model"
+                [(ngModel)]="tire.model" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_index">Index</label>
+            <input type="text" class="form-control" name="index" id="field_index"
+                [(ngModel)]="tire.index" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_price">Price</label>
+            <input type="number" class="form-control" name="price" id="field_price"
+                [(ngModel)]="tire.price" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_season">Season</label>
+            <select class="form-control" name="season" [(ngModel)]="tire.season" id="field_season" >
+                <option value="WINTER">WINTER</option>
+                <option value="SUMMER">SUMMER</option>
+                <option value="ALL_SEASON">ALL_SEASON</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_manufacturer">Manufacturer</label>
+            <select class="form-control" name="manufacturer" [(ngModel)]="tire.manufacturer" id="field_manufacturer" >
+                <option value="EURO">EURO</option>
+                <option value="CHINA">CHINA</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_technology">Technology</label>
+            <select class="form-control" name="technology" [(ngModel)]="tire.technology" id="field_technology" >
+                <option value="DEFAULT">DEFAULT</option>
+                <option value="RUNFLAT">RUNFLAT</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_salePoint">Sale Point</label>
+            <select class="form-control" id="field_salePoint" name="salePoint" [(ngModel)]="tire.salePoint" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="salePointOption.id === tire.salePoint?.id ? tire.salePoint : salePointOption" *ngFor="let salePointOption of salepoints; trackBy: trackSalePointById">{{salePointOption.name}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,70 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "salePoint",
+            "otherEntityName": "salePoint",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "title",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "isStrong",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "radius",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "releaseYear",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "size",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "mark",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "model",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "index",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "price",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "season",
+            "fieldType": "Season",
+            "fieldValues": "WINTER,SUMMER,ALL_SEASON"
+        },
+        {
+            "fieldName": "manufacturer",
+            "fieldType": "Manufacturer",
+            "fieldValues": "EURO,CHINA"
+        },
+        {
+            "fieldName": "technology",
+            "fieldType": "Technology",
+            "fieldValues": "DEFAULT,RUNFLAT"
+        }
+    ],
+    "changelogDate": "20180123153329",
+    "entityTableName": "tire",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

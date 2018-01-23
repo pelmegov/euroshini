@@ -1,0 +1,107 @@
+<div>
+    <h2>
+        <span>Tires</span>
+        <button class="btn btn-primary float-right jh-create-entity create-tire" [routerLink]="['/', { outlets: { popup: ['tire-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span class="hidden-sm-down" >
+            Create new Tire
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
+                    <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <span class="fa fa-trash-o"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="tires">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="title"><span>Title</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="isStrong"><span>Is Strong</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="radius"><span>Radius</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="releaseYear"><span>Release Year</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="size"><span>Size</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="mark"><span>Mark</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="model"><span>Model</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="index"><span>Index</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="price"><span>Price</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="season"><span>Season</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="manufacturer"><span>Manufacturer</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="technology"><span>Technology</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="salePoint.name"><span>Sale Point</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let tire of tires ;trackBy: trackId">
+                <td><a [routerLink]="['../tire', tire.id ]">{{tire.id}}</a></td>
+                <td>{{tire.title}}</td>
+                <td>{{tire.isStrong}}</td>
+                <td>{{tire.radius}}</td>
+                <td>{{tire.releaseYear}}</td>
+                <td>{{tire.size}}</td>
+                <td>{{tire.mark}}</td>
+                <td>{{tire.model}}</td>
+                <td>{{tire.index}}</td>
+                <td>{{tire.price}}</td>
+                <td>{{tire.season}}</td>
+                <td>{{tire.manufacturer}}</td>
+                <td>{{tire.technology}}</td>
+                <td>
+                    <div *ngIf="tire.salePoint">
+                        <a [routerLink]="['../sale-point', tire.salePoint?.id ]" >{{tire.salePoint?.name}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../tire', tire.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'tire/'+ tire.id + '/edit'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'tire/'+ tire.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="tires && tires.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

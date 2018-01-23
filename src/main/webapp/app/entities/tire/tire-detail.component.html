@@ -1,0 +1,76 @@
+
+<div *ngIf="tire">
+    <h2><span>Tire</span> {{tire.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Title</span></dt>
+        <dd>
+            <span>{{tire.title}}</span>
+        </dd>
+        <dt><span>Is Strong</span></dt>
+        <dd>
+            <span>{{tire.isStrong}}</span>
+        </dd>
+        <dt><span>Radius</span></dt>
+        <dd>
+            <span>{{tire.radius}}</span>
+        </dd>
+        <dt><span>Release Year</span></dt>
+        <dd>
+            <span>{{tire.releaseYear}}</span>
+        </dd>
+        <dt><span>Size</span></dt>
+        <dd>
+            <span>{{tire.size}}</span>
+        </dd>
+        <dt><span>Mark</span></dt>
+        <dd>
+            <span>{{tire.mark}}</span>
+        </dd>
+        <dt><span>Model</span></dt>
+        <dd>
+            <span>{{tire.model}}</span>
+        </dd>
+        <dt><span>Index</span></dt>
+        <dd>
+            <span>{{tire.index}}</span>
+        </dd>
+        <dt><span>Price</span></dt>
+        <dd>
+            <span>{{tire.price}}</span>
+        </dd>
+        <dt><span>Season</span></dt>
+        <dd>
+            <span>{{tire.season}}</span>
+        </dd>
+        <dt><span>Manufacturer</span></dt>
+        <dd>
+            <span>{{tire.manufacturer}}</span>
+        </dd>
+        <dt><span>Technology</span></dt>
+        <dd>
+            <span>{{tire.technology}}</span>
+        </dd>
+        <dt><span>Sale Point</span></dt>
+        <dd>
+            <div *ngIf="tire.salePoint">
+                <a [routerLink]="['/sale-point', tire.salePoint?.id]">{{tire.salePoint?.name}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'tire/'+ tire.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>
