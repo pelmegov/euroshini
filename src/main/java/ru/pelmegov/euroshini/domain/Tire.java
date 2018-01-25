@@ -56,6 +56,9 @@ public class Tire implements Serializable {
     @Column(name = "price", precision=10, scale=2)
     private BigDecimal price;
 
+    @Column(name = "count")
+    private Integer count;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "season")
     private Season season;
@@ -197,6 +200,19 @@ public class Tire implements Serializable {
         this.price = price;
     }
 
+    public Integer getCount() {
+        return count;
+    }
+
+    public Tire count(Integer count) {
+        this.count = count;
+        return this;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public Season getSeason() {
         return season;
     }
@@ -283,6 +299,7 @@ public class Tire implements Serializable {
             ", model='" + getModel() + "'" +
             ", index='" + getIndex() + "'" +
             ", price=" + getPrice() +
+            ", count=" + getCount() +
             ", season='" + getSeason() + "'" +
             ", manufacturer='" + getManufacturer() + "'" +
             ", technology='" + getTechnology() + "'" +

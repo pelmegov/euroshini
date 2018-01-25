@@ -70,6 +70,9 @@ public class TireResourceIntTest {
     private static final BigDecimal DEFAULT_PRICE = new BigDecimal(1);
     private static final BigDecimal UPDATED_PRICE = new BigDecimal(2);
 
+    private static final Integer DEFAULT_COUNT = 1;
+    private static final Integer UPDATED_COUNT = 2;
+
     private static final Season DEFAULT_SEASON = Season.WINTER;
     private static final Season UPDATED_SEASON = Season.SUMMER;
 
@@ -129,6 +132,7 @@ public class TireResourceIntTest {
             .model(DEFAULT_MODEL)
             .index(DEFAULT_INDEX)
             .price(DEFAULT_PRICE)
+            .count(DEFAULT_COUNT)
             .season(DEFAULT_SEASON)
             .manufacturer(DEFAULT_MANUFACTURER)
             .technology(DEFAULT_TECHNOLOGY);
@@ -165,6 +169,7 @@ public class TireResourceIntTest {
         assertThat(testTire.getModel()).isEqualTo(DEFAULT_MODEL);
         assertThat(testTire.getIndex()).isEqualTo(DEFAULT_INDEX);
         assertThat(testTire.getPrice()).isEqualTo(DEFAULT_PRICE);
+        assertThat(testTire.getCount()).isEqualTo(DEFAULT_COUNT);
         assertThat(testTire.getSeason()).isEqualTo(DEFAULT_SEASON);
         assertThat(testTire.getManufacturer()).isEqualTo(DEFAULT_MANUFACTURER);
         assertThat(testTire.getTechnology()).isEqualTo(DEFAULT_TECHNOLOGY);
@@ -213,6 +218,7 @@ public class TireResourceIntTest {
             .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
             .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)))
             .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
             .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())));
@@ -238,6 +244,7 @@ public class TireResourceIntTest {
             .andExpect(jsonPath("$.model").value(DEFAULT_MODEL.toString()))
             .andExpect(jsonPath("$.index").value(DEFAULT_INDEX.toString()))
             .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
+            .andExpect(jsonPath("$.count").value(DEFAULT_COUNT))
             .andExpect(jsonPath("$.season").value(DEFAULT_SEASON.toString()))
             .andExpect(jsonPath("$.manufacturer").value(DEFAULT_MANUFACTURER.toString()))
             .andExpect(jsonPath("$.technology").value(DEFAULT_TECHNOLOGY.toString()));
@@ -273,6 +280,7 @@ public class TireResourceIntTest {
             .model(UPDATED_MODEL)
             .index(UPDATED_INDEX)
             .price(UPDATED_PRICE)
+            .count(UPDATED_COUNT)
             .season(UPDATED_SEASON)
             .manufacturer(UPDATED_MANUFACTURER)
             .technology(UPDATED_TECHNOLOGY);
@@ -295,6 +303,7 @@ public class TireResourceIntTest {
         assertThat(testTire.getModel()).isEqualTo(UPDATED_MODEL);
         assertThat(testTire.getIndex()).isEqualTo(UPDATED_INDEX);
         assertThat(testTire.getPrice()).isEqualTo(UPDATED_PRICE);
+        assertThat(testTire.getCount()).isEqualTo(UPDATED_COUNT);
         assertThat(testTire.getSeason()).isEqualTo(UPDATED_SEASON);
         assertThat(testTire.getManufacturer()).isEqualTo(UPDATED_MANUFACTURER);
         assertThat(testTire.getTechnology()).isEqualTo(UPDATED_TECHNOLOGY);
@@ -365,6 +374,7 @@ public class TireResourceIntTest {
             .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
             .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)))
             .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
             .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())));

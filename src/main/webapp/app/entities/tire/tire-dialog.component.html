@@ -53,11 +53,6 @@
                 [(ngModel)]="tire.index" />
         </div>
         <div class="form-group">
-            <label class="form-control-label" for="field_price">Price</label>
-            <input type="number" class="form-control" name="price" id="field_price"
-                [(ngModel)]="tire.price" />
-        </div>
-        <div class="form-group">
             <label class="form-control-label" for="field_season">Season</label>
             <select class="form-control" name="season" [(ngModel)]="tire.season" id="field_season" >
                 <option value="WINTER">WINTER</option>
@@ -86,6 +81,17 @@
                 <option [ngValue]="null"></option>
                 <option [ngValue]="salePointOption.id === tire.salePoint?.id ? tire.salePoint : salePointOption" *ngFor="let salePointOption of salepoints; trackBy: trackSalePointById">{{salePointOption.name}}</option>
             </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_price">Price</label>
+            <input type="number" class="form-control" name="price" id="field_price"
+                   [(ngModel)]="tire.price" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_count">Count</label>
+            <input type="number" class="form-control" name="count" id="field_count"
+                   [(ngModel)]="tire.count" />
         </div>
     </div>
     <div class="modal-footer">

@@ -28,6 +28,7 @@ export class Tire implements BaseEntity {
         public model?: string,
         public index?: string,
         public price?: number,
+        public count?: number,
         public season?: Season,
         public manufacturer?: Manufacturer,
         public technology?: Technology,

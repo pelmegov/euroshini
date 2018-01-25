@@ -36,10 +36,6 @@
         <dd>
             <span>{{tire.index}}</span>
         </dd>
-        <dt><span>Price</span></dt>
-        <dd>
-            <span>{{tire.price}}</span>
-        </dd>
         <dt><span>Season</span></dt>
         <dd>
             <span>{{tire.season}}</span>
@@ -57,6 +53,14 @@
             <div *ngIf="tire.salePoint">
                 <a [routerLink]="['/sale-point', tire.salePoint?.id]">{{tire.salePoint?.name}}</a>
             </div>
+        </dd>
+        <dt><span>Price</span></dt>
+        <dd>
+            <span>{{tire.price}}</span>
+        </dd>
+        <dt><span>Count</span></dt>
+        <dd>
+            <span>{{tire.count}}</span>
         </dd>
     </dl>
 

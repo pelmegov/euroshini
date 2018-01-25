@@ -57,6 +57,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="count" type="integer">
+                <constraints nullable="true" />
+            </column>
+
             <column name="season" type="varchar(255)">
                 <constraints nullable="true" />
             </column>

@@ -46,6 +46,10 @@
             "fieldType": "BigDecimal"
         },
         {
+            "fieldName": "count",
+            "fieldType": "Integer"
+        },
+        {
             "fieldName": "season",
             "fieldType": "Season",
             "fieldValues": "WINTER,SUMMER,ALL_SEASON"
