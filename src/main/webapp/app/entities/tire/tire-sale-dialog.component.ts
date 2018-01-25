@@ -13,10 +13,10 @@ import { SalePoint, SalePointService } from '../sale-point';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
-    selector: 'jhi-tire-dialog',
-    templateUrl: './tire-dialog.component.html'
+    selector: 'jhi-tire-sale-dialog',
+    templateUrl: './tire-sale-dialog.component.html'
 })
-export class TireDialogComponent implements OnInit {
+export class TireSaleDialogComponent implements OnInit {
 
     tire: Tire;
     isSaving: boolean;
@@ -42,15 +42,8 @@ export class TireDialogComponent implements OnInit {
         this.activeModal.dismiss('cancel');
     }
 
-    save() {
-        this.isSaving = true;
-        if (this.tire.id !== undefined) {
-            this.subscribeToSaveResponse(
-                this.tireService.update(this.tire));
-        } else {
-            this.subscribeToSaveResponse(
-                this.tireService.create(this.tire));
-        }
+    sale() {
+        console.log('sale');
     }
 
     private subscribeToSaveResponse(result: Observable<Tire>) {
@@ -81,7 +74,7 @@ export class TireDialogComponent implements OnInit {
     selector: 'jhi-tire-sale-popup',
     template: ''
 })
-export class TirePopupComponent implements OnInit, OnDestroy {
+export class TireSalePopupComponent implements OnInit, OnDestroy {
 
     routeSub: any;
 
@@ -94,10 +87,10 @@ export class TirePopupComponent implements OnInit, OnDestroy {
         this.routeSub = this.route.params.subscribe((params) => {
             if ( params['id'] ) {
                 this.tirePopupService
-                    .open(TireDialogComponent as Component, params['id']);
+                    .open(TireSaleDialogComponent as Component, params['id']);
             } else {
                 this.tirePopupService
-                    .open(TireDialogComponent as Component);
+                    .open(TireSaleDialogComponent as Component);
             }
         });
     }

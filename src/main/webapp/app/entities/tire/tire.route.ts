@@ -7,6 +7,7 @@ import { TireComponent } from './tire.component';
 import { TireDetailComponent } from './tire-detail.component';
 import { TirePopupComponent } from './tire-dialog.component';
 import { TireDeletePopupComponent } from './tire-delete-dialog.component';
+import { TireSalePopupComponent } from './tire-sale-dialog.component';
 
 @Injectable()
 export class TireResolvePagingParams implements Resolve<any> {
@@ -61,6 +62,16 @@ export const tirePopupRoute: Routes = [
     {
         path: 'tire/:id/edit',
         component: TirePopupComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'Tires'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
+        path: 'tire/:id/sale',
+        component: TireSalePopupComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'Tires'
