@@ -5,6 +5,8 @@ import ru.pelmegov.euroshini.EuroshiniApp;
 import ru.pelmegov.euroshini.domain.SalePoint;
 import ru.pelmegov.euroshini.repository.SalePointRepository;
 import ru.pelmegov.euroshini.repository.search.SalePointSearchRepository;
+import ru.pelmegov.euroshini.service.dto.SalePointDTO;
+import ru.pelmegov.euroshini.service.mapper.SalePointMapper;
 import ru.pelmegov.euroshini.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -46,6 +48,9 @@ public class SalePointResourceIntTest {
     private SalePointRepository salePointRepository;
 
     @Autowired
+    private SalePointMapper salePointMapper;
+
+    @Autowired
     private SalePointSearchRepository salePointSearchRepository;
 
     @Autowired
@@ -67,7 +72,7 @@ public class SalePointResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final SalePointResource salePointResource = new SalePointResource(salePointRepository, salePointSearchRepository);
+        final SalePointResource salePointResource = new SalePointResource(salePointRepository, salePointMapper, salePointSearchRepository);
         this.restSalePointMockMvc = MockMvcBuilders.standaloneSetup(salePointResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -99,9 +104,10 @@ public class SalePointResourceIntTest {
         int databaseSizeBeforeCreate = salePointRepository.findAll().size();
 
         // Create the SalePoint
+        SalePointDTO salePointDTO = salePointMapper.toDto(salePoint);
         restSalePointMockMvc.perform(post("/api/sale-points")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(salePoint)))
+            .content(TestUtil.convertObjectToJsonBytes(salePointDTO)))
             .andExpect(status().isCreated());
 
         // Validate the SalePoint in the database
@@ -122,11 +128,12 @@ public class SalePointResourceIntTest {
 
         // Create the SalePoint with an existing ID
         salePoint.setId(1L);
+        SalePointDTO salePointDTO = salePointMapper.toDto(salePoint);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restSalePointMockMvc.perform(post("/api/sale-points")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(salePoint)))
+            .content(TestUtil.convertObjectToJsonBytes(salePointDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the SalePoint in the database
@@ -184,10 +191,11 @@ public class SalePointResourceIntTest {
         em.detach(updatedSalePoint);
         updatedSalePoint
             .name(UPDATED_NAME);
+        SalePointDTO salePointDTO = salePointMapper.toDto(updatedSalePoint);
 
         restSalePointMockMvc.perform(put("/api/sale-points")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedSalePoint)))
+            .content(TestUtil.convertObjectToJsonBytes(salePointDTO)))
             .andExpect(status().isOk());
 
         // Validate the SalePoint in the database
@@ -207,11 +215,12 @@ public class SalePointResourceIntTest {
         int databaseSizeBeforeUpdate = salePointRepository.findAll().size();
 
         // Create the SalePoint
+        SalePointDTO salePointDTO = salePointMapper.toDto(salePoint);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restSalePointMockMvc.perform(put("/api/sale-points")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(salePoint)))
+            .content(TestUtil.convertObjectToJsonBytes(salePointDTO)))
             .andExpect(status().isCreated());
 
         // Validate the SalePoint in the database
@@ -269,5 +278,28 @@ public class SalePointResourceIntTest {
         assertThat(salePoint1).isNotEqualTo(salePoint2);
         salePoint1.setId(null);
         assertThat(salePoint1).isNotEqualTo(salePoint2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(SalePointDTO.class);
+        SalePointDTO salePointDTO1 = new SalePointDTO();
+        salePointDTO1.setId(1L);
+        SalePointDTO salePointDTO2 = new SalePointDTO();
+        assertThat(salePointDTO1).isNotEqualTo(salePointDTO2);
+        salePointDTO2.setId(salePointDTO1.getId());
+        assertThat(salePointDTO1).isEqualTo(salePointDTO2);
+        salePointDTO2.setId(2L);
+        assertThat(salePointDTO1).isNotEqualTo(salePointDTO2);
+        salePointDTO1.setId(null);
+        assertThat(salePointDTO1).isNotEqualTo(salePointDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(salePointMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(salePointMapper.fromId(null)).isNull();
     }
 }

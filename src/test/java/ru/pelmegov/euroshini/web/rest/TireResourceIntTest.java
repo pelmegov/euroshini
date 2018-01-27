@@ -5,6 +5,8 @@ import ru.pelmegov.euroshini.EuroshiniApp;
 import ru.pelmegov.euroshini.domain.Tire;
 import ru.pelmegov.euroshini.repository.TireRepository;
 import ru.pelmegov.euroshini.repository.search.TireSearchRepository;
+import ru.pelmegov.euroshini.service.dto.TireDTO;
+import ru.pelmegov.euroshini.service.mapper.TireMapper;
 import ru.pelmegov.euroshini.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -67,12 +69,6 @@ public class TireResourceIntTest {
     private static final String DEFAULT_INDEX = "AAAAAAAAAA";
     private static final String UPDATED_INDEX = "BBBBBBBBBB";
 
-    private static final BigDecimal DEFAULT_PRICE = new BigDecimal(1);
-    private static final BigDecimal UPDATED_PRICE = new BigDecimal(2);
-
-    private static final Integer DEFAULT_COUNT = 1;
-    private static final Integer UPDATED_COUNT = 2;
-
     private static final Season DEFAULT_SEASON = Season.WINTER;
     private static final Season UPDATED_SEASON = Season.SUMMER;
 
@@ -82,8 +78,17 @@ public class TireResourceIntTest {
     private static final Technology DEFAULT_TECHNOLOGY = Technology.DEFAULT;
     private static final Technology UPDATED_TECHNOLOGY = Technology.RUNFLAT;
 
+    private static final BigDecimal DEFAULT_PRICE = new BigDecimal(1);
+    private static final BigDecimal UPDATED_PRICE = new BigDecimal(2);
+
+    private static final Integer DEFAULT_COUNT = 1;
+    private static final Integer UPDATED_COUNT = 2;
+
     @Autowired
     private TireRepository tireRepository;
+
+    @Autowired
+    private TireMapper tireMapper;
 
     @Autowired
     private TireSearchRepository tireSearchRepository;
@@ -107,7 +112,7 @@ public class TireResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final TireResource tireResource = new TireResource(tireRepository, tireSearchRepository);
+        final TireResource tireResource = new TireResource(tireRepository, tireMapper, tireSearchRepository);
         this.restTireMockMvc = MockMvcBuilders.standaloneSetup(tireResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -131,11 +136,11 @@ public class TireResourceIntTest {
             .mark(DEFAULT_MARK)
             .model(DEFAULT_MODEL)
             .index(DEFAULT_INDEX)
-            .price(DEFAULT_PRICE)
-            .count(DEFAULT_COUNT)
             .season(DEFAULT_SEASON)
             .manufacturer(DEFAULT_MANUFACTURER)
-            .technology(DEFAULT_TECHNOLOGY);
+            .technology(DEFAULT_TECHNOLOGY)
+            .price(DEFAULT_PRICE)
+            .count(DEFAULT_COUNT);
         return tire;
     }
 
@@ -151,9 +156,10 @@ public class TireResourceIntTest {
         int databaseSizeBeforeCreate = tireRepository.findAll().size();
 
         // Create the Tire
+        TireDTO tireDTO = tireMapper.toDto(tire);
         restTireMockMvc.perform(post("/api/tires")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(tire)))
+            .content(TestUtil.convertObjectToJsonBytes(tireDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Tire in the database
@@ -168,11 +174,11 @@ public class TireResourceIntTest {
         assertThat(testTire.getMark()).isEqualTo(DEFAULT_MARK);
         assertThat(testTire.getModel()).isEqualTo(DEFAULT_MODEL);
         assertThat(testTire.getIndex()).isEqualTo(DEFAULT_INDEX);
-        assertThat(testTire.getPrice()).isEqualTo(DEFAULT_PRICE);
-        assertThat(testTire.getCount()).isEqualTo(DEFAULT_COUNT);
         assertThat(testTire.getSeason()).isEqualTo(DEFAULT_SEASON);
         assertThat(testTire.getManufacturer()).isEqualTo(DEFAULT_MANUFACTURER);
         assertThat(testTire.getTechnology()).isEqualTo(DEFAULT_TECHNOLOGY);
+        assertThat(testTire.getPrice()).isEqualTo(DEFAULT_PRICE);
+        assertThat(testTire.getCount()).isEqualTo(DEFAULT_COUNT);
 
         // Validate the Tire in Elasticsearch
         Tire tireEs = tireSearchRepository.findOne(testTire.getId());
@@ -186,11 +192,12 @@ public class TireResourceIntTest {
 
         // Create the Tire with an existing ID
         tire.setId(1L);
+        TireDTO tireDTO = tireMapper.toDto(tire);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTireMockMvc.perform(post("/api/tires")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(tire)))
+            .content(TestUtil.convertObjectToJsonBytes(tireDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Tire in the database
@@ -217,11 +224,11 @@ public class TireResourceIntTest {
             .andExpect(jsonPath("$.[*].mark").value(hasItem(DEFAULT_MARK.toString())))
             .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
             .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
-            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)))
             .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
-            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())));
+            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)));
     }
 
     @Test
@@ -243,11 +250,11 @@ public class TireResourceIntTest {
             .andExpect(jsonPath("$.mark").value(DEFAULT_MARK.toString()))
             .andExpect(jsonPath("$.model").value(DEFAULT_MODEL.toString()))
             .andExpect(jsonPath("$.index").value(DEFAULT_INDEX.toString()))
-            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
-            .andExpect(jsonPath("$.count").value(DEFAULT_COUNT))
             .andExpect(jsonPath("$.season").value(DEFAULT_SEASON.toString()))
             .andExpect(jsonPath("$.manufacturer").value(DEFAULT_MANUFACTURER.toString()))
-            .andExpect(jsonPath("$.technology").value(DEFAULT_TECHNOLOGY.toString()));
+            .andExpect(jsonPath("$.technology").value(DEFAULT_TECHNOLOGY.toString()))
+            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
+            .andExpect(jsonPath("$.count").value(DEFAULT_COUNT));
     }
 
     @Test
@@ -279,15 +286,16 @@ public class TireResourceIntTest {
             .mark(UPDATED_MARK)
             .model(UPDATED_MODEL)
             .index(UPDATED_INDEX)
-            .price(UPDATED_PRICE)
-            .count(UPDATED_COUNT)
             .season(UPDATED_SEASON)
             .manufacturer(UPDATED_MANUFACTURER)
-            .technology(UPDATED_TECHNOLOGY);
+            .technology(UPDATED_TECHNOLOGY)
+            .price(UPDATED_PRICE)
+            .count(UPDATED_COUNT);
+        TireDTO tireDTO = tireMapper.toDto(updatedTire);
 
         restTireMockMvc.perform(put("/api/tires")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedTire)))
+            .content(TestUtil.convertObjectToJsonBytes(tireDTO)))
             .andExpect(status().isOk());
 
         // Validate the Tire in the database
@@ -302,11 +310,11 @@ public class TireResourceIntTest {
         assertThat(testTire.getMark()).isEqualTo(UPDATED_MARK);
         assertThat(testTire.getModel()).isEqualTo(UPDATED_MODEL);
         assertThat(testTire.getIndex()).isEqualTo(UPDATED_INDEX);
-        assertThat(testTire.getPrice()).isEqualTo(UPDATED_PRICE);
-        assertThat(testTire.getCount()).isEqualTo(UPDATED_COUNT);
         assertThat(testTire.getSeason()).isEqualTo(UPDATED_SEASON);
         assertThat(testTire.getManufacturer()).isEqualTo(UPDATED_MANUFACTURER);
         assertThat(testTire.getTechnology()).isEqualTo(UPDATED_TECHNOLOGY);
+        assertThat(testTire.getPrice()).isEqualTo(UPDATED_PRICE);
+        assertThat(testTire.getCount()).isEqualTo(UPDATED_COUNT);
 
         // Validate the Tire in Elasticsearch
         Tire tireEs = tireSearchRepository.findOne(testTire.getId());
@@ -319,11 +327,12 @@ public class TireResourceIntTest {
         int databaseSizeBeforeUpdate = tireRepository.findAll().size();
 
         // Create the Tire
+        TireDTO tireDTO = tireMapper.toDto(tire);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restTireMockMvc.perform(put("/api/tires")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(tire)))
+            .content(TestUtil.convertObjectToJsonBytes(tireDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Tire in the database
@@ -373,11 +382,11 @@ public class TireResourceIntTest {
             .andExpect(jsonPath("$.[*].mark").value(hasItem(DEFAULT_MARK.toString())))
             .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
             .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
-            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)))
             .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
-            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())));
+            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)));
     }
 
     @Test
@@ -393,5 +402,28 @@ public class TireResourceIntTest {
         assertThat(tire1).isNotEqualTo(tire2);
         tire1.setId(null);
         assertThat(tire1).isNotEqualTo(tire2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(TireDTO.class);
+        TireDTO tireDTO1 = new TireDTO();
+        tireDTO1.setId(1L);
+        TireDTO tireDTO2 = new TireDTO();
+        assertThat(tireDTO1).isNotEqualTo(tireDTO2);
+        tireDTO2.setId(tireDTO1.getId());
+        assertThat(tireDTO1).isEqualTo(tireDTO2);
+        tireDTO2.setId(2L);
+        assertThat(tireDTO1).isNotEqualTo(tireDTO2);
+        tireDTO1.setId(null);
+        assertThat(tireDTO1).isNotEqualTo(tireDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(tireMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(tireMapper.fromId(null)).isNull();
     }
 }

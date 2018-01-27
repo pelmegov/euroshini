@@ -7,6 +7,8 @@ import ru.pelmegov.euroshini.repository.SalePointRepository;
 import ru.pelmegov.euroshini.repository.search.SalePointSearchRepository;
 import ru.pelmegov.euroshini.web.rest.errors.BadRequestAlertException;
 import ru.pelmegov.euroshini.web.rest.util.HeaderUtil;
+import ru.pelmegov.euroshini.service.dto.SalePointDTO;
+import ru.pelmegov.euroshini.service.mapper.SalePointMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,29 +38,34 @@ public class SalePointResource {
 
     private final SalePointRepository salePointRepository;
 
+    private final SalePointMapper salePointMapper;
+
     private final SalePointSearchRepository salePointSearchRepository;
 
-    public SalePointResource(SalePointRepository salePointRepository, SalePointSearchRepository salePointSearchRepository) {
+    public SalePointResource(SalePointRepository salePointRepository, SalePointMapper salePointMapper, SalePointSearchRepository salePointSearchRepository) {
         this.salePointRepository = salePointRepository;
+        this.salePointMapper = salePointMapper;
         this.salePointSearchRepository = salePointSearchRepository;
     }
 
     /**
      * POST  /sale-points : Create a new salePoint.
      *
-     * @param salePoint the salePoint to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new salePoint, or with status 400 (Bad Request) if the salePoint has already an ID
+     * @param salePointDTO the salePointDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new salePointDTO, or with status 400 (Bad Request) if the salePoint has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/sale-points")
     @Timed
-    public ResponseEntity<SalePoint> createSalePoint(@RequestBody SalePoint salePoint) throws URISyntaxException {
-        log.debug("REST request to save SalePoint : {}", salePoint);
-        if (salePoint.getId() != null) {
+    public ResponseEntity<SalePointDTO> createSalePoint(@RequestBody SalePointDTO salePointDTO) throws URISyntaxException {
+        log.debug("REST request to save SalePoint : {}", salePointDTO);
+        if (salePointDTO.getId() != null) {
             throw new BadRequestAlertException("A new salePoint cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        SalePoint result = salePointRepository.save(salePoint);
-        salePointSearchRepository.save(result);
+        SalePoint salePoint = salePointMapper.toEntity(salePointDTO);
+        salePoint = salePointRepository.save(salePoint);
+        SalePointDTO result = salePointMapper.toDto(salePoint);
+        salePointSearchRepository.save(salePoint);
         return ResponseEntity.created(new URI("/api/sale-points/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -67,23 +74,25 @@ public class SalePointResource {
     /**
      * PUT  /sale-points : Updates an existing salePoint.
      *
-     * @param salePoint the salePoint to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated salePoint,
-     * or with status 400 (Bad Request) if the salePoint is not valid,
-     * or with status 500 (Internal Server Error) if the salePoint couldn't be updated
+     * @param salePointDTO the salePointDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated salePointDTO,
+     * or with status 400 (Bad Request) if the salePointDTO is not valid,
+     * or with status 500 (Internal Server Error) if the salePointDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/sale-points")
     @Timed
-    public ResponseEntity<SalePoint> updateSalePoint(@RequestBody SalePoint salePoint) throws URISyntaxException {
-        log.debug("REST request to update SalePoint : {}", salePoint);
-        if (salePoint.getId() == null) {
-            return createSalePoint(salePoint);
+    public ResponseEntity<SalePointDTO> updateSalePoint(@RequestBody SalePointDTO salePointDTO) throws URISyntaxException {
+        log.debug("REST request to update SalePoint : {}", salePointDTO);
+        if (salePointDTO.getId() == null) {
+            return createSalePoint(salePointDTO);
         }
-        SalePoint result = salePointRepository.save(salePoint);
-        salePointSearchRepository.save(result);
+        SalePoint salePoint = salePointMapper.toEntity(salePointDTO);
+        salePoint = salePointRepository.save(salePoint);
+        SalePointDTO result = salePointMapper.toDto(salePoint);
+        salePointSearchRepository.save(salePoint);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, salePoint.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, salePointDTO.getId().toString()))
             .body(result);
     }
 
@@ -94,29 +103,31 @@ public class SalePointResource {
      */
     @GetMapping("/sale-points")
     @Timed
-    public List<SalePoint> getAllSalePoints() {
+    public List<SalePointDTO> getAllSalePoints() {
         log.debug("REST request to get all SalePoints");
-        return salePointRepository.findAll();
+        List<SalePoint> salePoints = salePointRepository.findAll();
+        return salePointMapper.toDto(salePoints);
         }
 
     /**
      * GET  /sale-points/:id : get the "id" salePoint.
      *
-     * @param id the id of the salePoint to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the salePoint, or with status 404 (Not Found)
+     * @param id the id of the salePointDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the salePointDTO, or with status 404 (Not Found)
      */
     @GetMapping("/sale-points/{id}")
     @Timed
-    public ResponseEntity<SalePoint> getSalePoint(@PathVariable Long id) {
+    public ResponseEntity<SalePointDTO> getSalePoint(@PathVariable Long id) {
         log.debug("REST request to get SalePoint : {}", id);
         SalePoint salePoint = salePointRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(salePoint));
+        SalePointDTO salePointDTO = salePointMapper.toDto(salePoint);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(salePointDTO));
     }
 
     /**
      * DELETE  /sale-points/:id : delete the "id" salePoint.
      *
-     * @param id the id of the salePoint to delete
+     * @param id the id of the salePointDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/sale-points/{id}")
@@ -137,10 +148,11 @@ public class SalePointResource {
      */
     @GetMapping("/_search/sale-points")
     @Timed
-    public List<SalePoint> searchSalePoints(@RequestParam String query) {
+    public List<SalePointDTO> searchSalePoints(@RequestParam String query) {
         log.debug("REST request to search SalePoints for query {}", query);
         return StreamSupport
             .stream(salePointSearchRepository.search(queryStringQuery(query)).spliterator(), false)
+            .map(salePointMapper::toDto)
             .collect(Collectors.toList());
     }
 

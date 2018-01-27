@@ -1,0 +1,40 @@
+
+<div *ngIf="saleHistory">
+    <h2><span>Sale History</span> {{saleHistory.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Count</span></dt>
+        <dd>
+            <span>{{saleHistory.count}}</span>
+        </dd>
+        <dt><span>Price</span></dt>
+        <dd>
+            <span>{{saleHistory.price}}</span>
+        </dd>
+        <dt><span>Sum</span></dt>
+        <dd>
+            <span>{{saleHistory.sum}}</span>
+        </dd>
+        <dt><span>Tire</span></dt>
+        <dd>
+            <div *ngIf="saleHistory.tire">
+                <a [routerLink]="['/tire', saleHistory.tire?.id]">{{saleHistory.tire?.title}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'sale-history/'+ saleHistory.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

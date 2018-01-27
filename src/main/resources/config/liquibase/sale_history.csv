@@ -1,0 +1,6 @@
+id;tire_id;count;price;sum;created_by;last_modified_by
+
+1;1;2;2500;5000;admin;admin
+2;2;4;5000;20000;user;user
+3;3;10;4500;45000;system;system
+4;4;1;3450;3450;user;user

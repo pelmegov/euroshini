@@ -14,20 +14,32 @@
     <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
     <!--
-        Added the entity SalePoint.
+        Added the entity SaleHistory.
     -->
-    <changeSet id="20180123153328-1" author="jhipster">
-        <createTable tableName="sale_point">
+    <changeSet id="20180127083220-1" author="jhipster">
+        <createTable tableName="sale_history">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
+            <column name="count" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="price" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="sum" type="decimal(10,2)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="tire_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-
+        
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

@@ -16,7 +16,7 @@
     ],
     "changelogDate": "20180123153330",
     "entityTableName": "sale_point",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "no",
     "service": "no",
     "jpaMetamodelFiltering": false

@@ -42,14 +42,6 @@
             "fieldType": "String"
         },
         {
-            "fieldName": "price",
-            "fieldType": "BigDecimal"
-        },
-        {
-            "fieldName": "count",
-            "fieldType": "Integer"
-        },
-        {
             "fieldName": "season",
             "fieldType": "Season",
             "fieldValues": "WINTER,SUMMER,ALL_SEASON"
@@ -65,31 +57,17 @@
             "fieldValues": "DEFAULT,RUNFLAT"
         },
         {
-            "fieldName": "createdBy",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
+            "fieldName": "price",
+            "fieldType": "BigDecimal"
         },
         {
-            "fieldName": "createdDate",
-            "fieldType": "ZonedDateTime"
-        },
-        {
-            "fieldName": "lastModifiedBy",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
-        },
-        {
-            "fieldName": "lastModifiedDate",
-            "fieldType": "ZonedDateTime"
+            "fieldName": "count",
+            "fieldType": "Integer"
         }
     ],
     "changelogDate": "20180123153329",
     "entityTableName": "tire",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
     "service": "no",
     "jpaMetamodelFiltering": false
