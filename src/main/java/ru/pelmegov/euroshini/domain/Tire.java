@@ -20,7 +20,7 @@ import ru.pelmegov.euroshini.domain.enumeration.Technology;
 @Entity
 @Table(name = "tire")
 @Document(indexName = "tire")
-public class Tire implements Serializable {
+public class Tire extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
