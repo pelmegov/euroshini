@@ -9,8 +9,6 @@ import {
     SalePointDetailComponent,
     SalePointDialogComponent,
     SalePointPopupComponent,
-    SalePointDeletePopupComponent,
-    SalePointDeleteDialogComponent,
     salePointRoute,
     salePointPopupRoute,
 } from './';
@@ -29,16 +27,12 @@ const ENTITY_STATES = [
         SalePointComponent,
         SalePointDetailComponent,
         SalePointDialogComponent,
-        SalePointDeleteDialogComponent,
         SalePointPopupComponent,
-        SalePointDeletePopupComponent,
     ],
     entryComponents: [
         SalePointComponent,
         SalePointDialogComponent,
         SalePointPopupComponent,
-        SalePointDeleteDialogComponent,
-        SalePointDeletePopupComponent,
     ],
     providers: [
         SalePointService,

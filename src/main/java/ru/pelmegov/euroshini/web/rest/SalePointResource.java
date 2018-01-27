@@ -125,21 +125,6 @@ public class SalePointResource {
     }
 
     /**
-     * DELETE  /sale-points/:id : delete the "id" salePoint.
-     *
-     * @param id the id of the salePointDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
-    @DeleteMapping("/sale-points/{id}")
-    @Timed
-    public ResponseEntity<Void> deleteSalePoint(@PathVariable Long id) {
-        log.debug("REST request to delete SalePoint : {}", id);
-        salePointRepository.delete(id);
-        salePointSearchRepository.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
      * SEARCH  /_search/sale-points?query=:query : search for the salePoint corresponding
      * to the query.
      *

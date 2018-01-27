@@ -4,7 +4,6 @@ import { UserRouteAccessService } from '../../shared';
 import { SalePointComponent } from './sale-point.component';
 import { SalePointDetailComponent } from './sale-point-detail.component';
 import { SalePointPopupComponent } from './sale-point-dialog.component';
-import { SalePointDeletePopupComponent } from './sale-point-delete-dialog.component';
 
 export const salePointRoute: Routes = [
     {
@@ -47,14 +46,4 @@ export const salePointPopupRoute: Routes = [
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
     },
-    {
-        path: 'sale-point/:id/delete',
-        component: SalePointDeletePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'SalePoints'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    }
 ];

@@ -230,28 +230,6 @@ public class SalePointResourceIntTest {
 
     @Test
     @Transactional
-    public void deleteSalePoint() throws Exception {
-        // Initialize the database
-        salePointRepository.saveAndFlush(salePoint);
-        salePointSearchRepository.save(salePoint);
-        int databaseSizeBeforeDelete = salePointRepository.findAll().size();
-
-        // Get the salePoint
-        restSalePointMockMvc.perform(delete("/api/sale-points/{id}", salePoint.getId())
-            .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk());
-
-        // Validate Elasticsearch is empty
-        boolean salePointExistsInEs = salePointSearchRepository.exists(salePoint.getId());
-        assertThat(salePointExistsInEs).isFalse();
-
-        // Validate the database is empty
-        List<SalePoint> salePointList = salePointRepository.findAll();
-        assertThat(salePointList).hasSize(databaseSizeBeforeDelete - 1);
-    }
-
-    @Test
-    @Transactional
     public void searchSalePoint() throws Exception {
         // Initialize the database
         salePointRepository.saveAndFlush(salePoint);
