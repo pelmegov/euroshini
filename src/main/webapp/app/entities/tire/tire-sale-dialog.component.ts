@@ -1,10 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
-
-import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiAlertService } from 'ng-jhipster';
 
 import { Tire } from './tire.model';
 import { TirePopupService } from './tire-popup.service';
@@ -28,7 +25,6 @@ export class TireSaleDialogComponent implements OnInit {
         private jhiAlertService: JhiAlertService,
         private tireService: TireService,
         private salePointService: SalePointService,
-        private eventManager: JhiEventManager
     ) {
     }
 
@@ -44,21 +40,7 @@ export class TireSaleDialogComponent implements OnInit {
 
     sale() {
         console.log('sale');
-    }
-
-    private subscribeToSaveResponse(result: Observable<Tire>) {
-        result.subscribe((res: Tire) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
-    }
-
-    private onSaveSuccess(result: Tire) {
-        this.eventManager.broadcast({ name: 'tireListModification', content: 'OK'});
-        this.isSaving = false;
-        this.activeModal.dismiss(result);
-    }
-
-    private onSaveError() {
-        this.isSaving = false;
+        this.tireService.query();
     }
 
     private onError(error: any) {
