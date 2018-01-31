@@ -11,10 +11,10 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {SalePointMapper.class})
 public interface TireMapper extends EntityMapper<TireDTO, Tire> {
 
-    @Mapping(source = "salePoint.id", target = "salePointId")
+    @Mapping(source = "salePoint", target = "salePoint")
     TireDTO toDto(Tire tire);
 
-    @Mapping(source = "salePointId", target = "salePoint")
+    @Mapping(source = "salePoint", target = "salePoint")
     Tire toEntity(TireDTO tireDTO);
 
     default Tire fromId(Long id) {

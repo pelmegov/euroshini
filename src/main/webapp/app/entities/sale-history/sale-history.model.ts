@@ -1,4 +1,5 @@
 import { BaseEntity } from './../../shared';
+import { Tire } from '../tire';
 
 export class SaleHistory implements BaseEntity {
 
@@ -10,7 +11,7 @@ export class SaleHistory implements BaseEntity {
         public count?: number,
         public price?: number,
         public sum?: number,
-        public tire?: BaseEntity,
+        public tire?: Tire,
         createdBy?: string,
         createdDate?: Date,
     ) {

@@ -1,4 +1,5 @@
 import { BaseEntity } from './../../shared';
+import { SalePoint } from '../sale-point';
 
 export const enum Season {
     'WINTER',
@@ -27,12 +28,12 @@ export class Tire implements BaseEntity {
         public mark?: string,
         public model?: string,
         public index?: string,
-        public price?: number,
-        public count?: number,
         public season?: Season,
         public manufacturer?: Manufacturer,
         public technology?: Technology,
-        public salePoint?: BaseEntity,
+        public price?: number,
+        public count?: number,
+        public salePoint?: SalePoint,
     ) {
         this.isStrong = false;
     }

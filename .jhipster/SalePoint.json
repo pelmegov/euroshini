@@ -14,7 +14,7 @@
             "fieldType": "String"
         }
     ],
-    "changelogDate": "20180123153330",
+    "changelogDate": "20180130181743",
     "entityTableName": "sale_point",
     "dto": "mapstruct",
     "pagination": "no",

@@ -53,12 +53,6 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
     @Column(name = "jhi_index")
     private String index;
 
-    @Column(name = "price", precision=10, scale=2)
-    private BigDecimal price;
-
-    @Column(name = "count")
-    private Integer count;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "season")
     private Season season;
@@ -70,6 +64,12 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "technology")
     private Technology technology;
+
+    @Column(name = "price", precision=10, scale=2)
+    private BigDecimal price;
+
+    @Column(name = "count")
+    private Integer count;
 
     @ManyToOne
     private SalePoint salePoint;
@@ -187,32 +187,6 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
         this.index = index;
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public Tire price(BigDecimal price) {
-        this.price = price;
-        return this;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public Tire count(Integer count) {
-        this.count = count;
-        return this;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
     public Season getSeason() {
         return season;
     }
@@ -250,6 +224,32 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
 
     public void setTechnology(Technology technology) {
         this.technology = technology;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public Tire price(BigDecimal price) {
+        this.price = price;
+        return this;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public Tire count(Integer count) {
+        this.count = count;
+        return this;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
     public SalePoint getSalePoint() {
@@ -298,11 +298,11 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
             ", mark='" + getMark() + "'" +
             ", model='" + getModel() + "'" +
             ", index='" + getIndex() + "'" +
-            ", price=" + getPrice() +
-            ", count=" + getCount() +
             ", season='" + getSeason() + "'" +
             ", manufacturer='" + getManufacturer() + "'" +
             ", technology='" + getTechnology() + "'" +
+            ", price=" + getPrice() +
+            ", count=" + getCount() +
             "}";
     }
 }

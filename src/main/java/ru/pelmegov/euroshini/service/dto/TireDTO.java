@@ -1,16 +1,17 @@
 package ru.pelmegov.euroshini.service.dto;
 
 
-import ru.pelmegov.euroshini.domain.SalePoint;
-import ru.pelmegov.euroshini.domain.Tire;
-import ru.pelmegov.euroshini.domain.enumeration.Manufacturer;
-import ru.pelmegov.euroshini.domain.enumeration.Season;
-import ru.pelmegov.euroshini.domain.enumeration.Technology;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
+
+import ru.pelmegov.euroshini.domain.SalePoint;
+import ru.pelmegov.euroshini.domain.enumeration.Season;
+import ru.pelmegov.euroshini.domain.enumeration.Manufacturer;
+import ru.pelmegov.euroshini.domain.enumeration.Technology;
 
 /**
  * A DTO for the Tire entity.
@@ -51,29 +52,9 @@ public class TireDTO implements Serializable {
 
     private Instant createdDate;
 
-    public TireDTO() {
-        // Empty constructor needed for Jackson.
-    }
+    private String lastModifiedBy;
 
-    public TireDTO(Tire entity) {
-        this.id = entity.getId();
-        this.title = entity.getTitle();
-        this.isStrong = entity.isIsStrong();
-        this.radius = entity.getRadius();
-        this.releaseYear = entity.getReleaseYear();
-        this.size = entity.getSize();
-        this.mark = entity.getMark();
-        this.model = entity.getModel();
-        this.index = entity.getIndex();
-        this.season = entity.getSeason();
-        this.manufacturer = entity.getManufacturer();
-        this.technology = entity.getTechnology();
-        this.price = entity.getPrice();
-        this.count = entity.getCount();
-        this.salePoint = entity.getSalePoint();
-        this.createdBy = entity.getCreatedBy();
-        this.createdDate = entity.getCreatedDate();
-    }
+    private Instant lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -195,14 +176,6 @@ public class TireDTO implements Serializable {
         this.salePoint = salePoint;
     }
 
-    public Boolean getStrong() {
-        return isStrong;
-    }
-
-    public void setStrong(Boolean strong) {
-        isStrong = strong;
-    }
-
     public String getCreatedBy() {
         return createdBy;
     }
@@ -219,6 +192,22 @@ public class TireDTO implements Serializable {
         this.createdDate = createdDate;
     }
 
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -229,7 +218,7 @@ public class TireDTO implements Serializable {
         }
 
         TireDTO tireDTO = (TireDTO) o;
-        if (tireDTO.getId() == null || getId() == null) {
+        if(tireDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), tireDTO.getId());

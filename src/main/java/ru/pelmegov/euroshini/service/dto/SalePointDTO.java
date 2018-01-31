@@ -1,8 +1,6 @@
 package ru.pelmegov.euroshini.service.dto;
 
 
-import ru.pelmegov.euroshini.domain.SalePoint;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,15 +14,6 @@ public class SalePointDTO implements Serializable {
     private Long id;
 
     private String name;
-
-    public SalePointDTO() {
-        // Empty constructor needed for Jackson.
-    }
-
-    public SalePointDTO(SalePoint salePoint) {
-        this.id = salePoint.getId();
-        this.name = salePoint.getName();
-    }
 
     public Long getId() {
         return id;

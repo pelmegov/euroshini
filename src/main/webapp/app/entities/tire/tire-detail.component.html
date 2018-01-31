@@ -48,12 +48,6 @@
         <dd>
             <span>{{tire.technology}}</span>
         </dd>
-        <dt><span>Sale Point</span></dt>
-        <dd>
-            <div *ngIf="tire.salePoint">
-                <a [routerLink]="['/sale-point', tire.salePoint?.id]">{{tire.salePoint?.name}}</a>
-            </div>
-        </dd>
         <dt><span>Price</span></dt>
         <dd>
             <span>{{tire.price}}</span>
@@ -61,6 +55,12 @@
         <dt><span>Count</span></dt>
         <dd>
             <span>{{tire.count}}</span>
+        </dd>
+        <dt><span>Sale Point</span></dt>
+        <dd>
+            <div *ngIf="tire.salePoint">
+                <a [routerLink]="['/sale-point', tire.salePoint?.id]">{{tire.salePoint?.name}}</a>
+            </div>
         </dd>
     </dl>
 

@@ -22,7 +22,7 @@
             "fieldType": "BigDecimal"
         }
     ],
-    "changelogDate": "20180127083220",
+    "changelogDate": "20180130181744",
     "entityTableName": "sale_history",
     "dto": "mapstruct",
     "pagination": "pagination",

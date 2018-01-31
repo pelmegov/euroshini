@@ -65,7 +65,7 @@
             "fieldType": "Integer"
         }
     ],
-    "changelogDate": "20180123153329",
+    "changelogDate": "20180130181742",
     "entityTableName": "tire",
     "dto": "mapstruct",
     "pagination": "pagination",

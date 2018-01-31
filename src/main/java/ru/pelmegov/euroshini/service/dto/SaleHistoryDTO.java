@@ -1,7 +1,6 @@
 package ru.pelmegov.euroshini.service.dto;
 
 
-import ru.pelmegov.euroshini.domain.SaleHistory;
 import ru.pelmegov.euroshini.domain.Tire;
 
 import java.io.Serializable;
@@ -28,19 +27,9 @@ public class SaleHistoryDTO implements Serializable {
 
     private Instant createdDate;
 
-    public SaleHistoryDTO() {
-        // Empty constructor needed for Jackson.
-    }
+    private String lastModifiedBy;
 
-    public SaleHistoryDTO(SaleHistory saleHistory) {
-        this.id = saleHistory.getId();
-        this.count = saleHistory.getCount();
-        this.price = saleHistory.getPrice();
-        this.sum = saleHistory.getSum();
-        this.tire = saleHistory.getTire();
-        this.createdBy = saleHistory.getCreatedBy();
-        this.createdDate = saleHistory.getCreatedDate();
-    }
+    private Instant lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -98,6 +87,22 @@ public class SaleHistoryDTO implements Serializable {
         this.createdDate = createdDate;
     }
 
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -108,7 +113,7 @@ public class SaleHistoryDTO implements Serializable {
         }
 
         SaleHistoryDTO saleHistoryDTO = (SaleHistoryDTO) o;
-        if(saleHistoryDTO.getId() == null || getId() == null) {
+        if (saleHistoryDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), saleHistoryDTO.getId());

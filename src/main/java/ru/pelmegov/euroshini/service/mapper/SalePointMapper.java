@@ -11,7 +11,6 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring", uses = {})
 public interface SalePointMapper extends EntityMapper<SalePointDTO, SalePoint> {
 
-
     @Mapping(target = "tires", ignore = true)
     SalePoint toEntity(SalePointDTO salePointDTO);
 
