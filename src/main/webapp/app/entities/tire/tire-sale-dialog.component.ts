@@ -59,7 +59,7 @@ export class TireSaleDialogComponent implements OnInit {
         this.activeModal.close(true);
     }
 
-    onKey() {
+    onKey(event: Event) {
         if (!this.moreTiresThanOnSalePoint()) {
             this.informationOnSale = 'Current sum: ' + this.price * this.count;
         }
