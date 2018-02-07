@@ -8,11 +8,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import ru.pelmegov.euroshini.domain.enumeration.Technology;
+
 import ru.pelmegov.euroshini.domain.enumeration.Season;
 
 import ru.pelmegov.euroshini.domain.enumeration.Manufacturer;
-
-import ru.pelmegov.euroshini.domain.enumeration.Technology;
 
 /**
  * A Tire.
@@ -29,29 +29,30 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @Column(name = "title")
-    private String title;
-
-    @Column(name = "is_strong")
-    private Boolean isStrong;
-
-    @Column(name = "radius")
-    private Double radius;
-
-    @Column(name = "release_year")
-    private String releaseYear;
-
-    @Column(name = "jhi_size")
-    private String size;
-
     @Column(name = "mark")
     private String mark;
 
     @Column(name = "model")
     private String model;
 
+    @Column(name = "radius")
+    private Double radius;
+
+    @Column(name = "jhi_size")
+    private String size;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "technology")
+    private Technology technology;
+
     @Column(name = "jhi_index")
     private String index;
+
+    @Column(name = "release_year")
+    private String releaseYear;
+
+    @Column(name = "is_strong")
+    private Boolean isStrong;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "season")
@@ -60,10 +61,6 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "manufacturer")
     private Manufacturer manufacturer;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "technology")
-    private Technology technology;
 
     @Column(name = "price", precision=10, scale=2)
     private BigDecimal price;
@@ -81,71 +78,6 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Tire title(String title) {
-        this.title = title;
-        return this;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Boolean isIsStrong() {
-        return isStrong;
-    }
-
-    public Tire isStrong(Boolean isStrong) {
-        this.isStrong = isStrong;
-        return this;
-    }
-
-    public void setIsStrong(Boolean isStrong) {
-        this.isStrong = isStrong;
-    }
-
-    public Double getRadius() {
-        return radius;
-    }
-
-    public Tire radius(Double radius) {
-        this.radius = radius;
-        return this;
-    }
-
-    public void setRadius(Double radius) {
-        this.radius = radius;
-    }
-
-    public String getReleaseYear() {
-        return releaseYear;
-    }
-
-    public Tire releaseYear(String releaseYear) {
-        this.releaseYear = releaseYear;
-        return this;
-    }
-
-    public void setReleaseYear(String releaseYear) {
-        this.releaseYear = releaseYear;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public Tire size(String size) {
-        this.size = size;
-        return this;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
     }
 
     public String getMark() {
@@ -174,6 +106,45 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
         this.model = model;
     }
 
+    public Double getRadius() {
+        return radius;
+    }
+
+    public Tire radius(Double radius) {
+        this.radius = radius;
+        return this;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public Tire size(String size) {
+        this.size = size;
+        return this;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public Technology getTechnology() {
+        return technology;
+    }
+
+    public Tire technology(Technology technology) {
+        this.technology = technology;
+        return this;
+    }
+
+    public void setTechnology(Technology technology) {
+        this.technology = technology;
+    }
+
     public String getIndex() {
         return index;
     }
@@ -185,6 +156,32 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
 
     public void setIndex(String index) {
         this.index = index;
+    }
+
+    public String getReleaseYear() {
+        return releaseYear;
+    }
+
+    public Tire releaseYear(String releaseYear) {
+        this.releaseYear = releaseYear;
+        return this;
+    }
+
+    public void setReleaseYear(String releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public Boolean isIsStrong() {
+        return isStrong;
+    }
+
+    public Tire isStrong(Boolean isStrong) {
+        this.isStrong = isStrong;
+        return this;
+    }
+
+    public void setIsStrong(Boolean isStrong) {
+        this.isStrong = isStrong;
     }
 
     public Season getSeason() {
@@ -211,19 +208,6 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
 
     public void setManufacturer(Manufacturer manufacturer) {
         this.manufacturer = manufacturer;
-    }
-
-    public Technology getTechnology() {
-        return technology;
-    }
-
-    public Tire technology(Technology technology) {
-        this.technology = technology;
-        return this;
-    }
-
-    public void setTechnology(Technology technology) {
-        this.technology = technology;
     }
 
     public BigDecimal getPrice() {
@@ -290,17 +274,16 @@ public class Tire extends AbstractAuditingEntity implements Serializable {
     public String toString() {
         return "Tire{" +
             "id=" + getId() +
-            ", title='" + getTitle() + "'" +
-            ", isStrong='" + isIsStrong() + "'" +
-            ", radius=" + getRadius() +
-            ", releaseYear='" + getReleaseYear() + "'" +
-            ", size='" + getSize() + "'" +
             ", mark='" + getMark() + "'" +
             ", model='" + getModel() + "'" +
+            ", radius=" + getRadius() +
+            ", size='" + getSize() + "'" +
+            ", technology='" + getTechnology() + "'" +
             ", index='" + getIndex() + "'" +
+            ", releaseYear='" + getReleaseYear() + "'" +
+            ", isStrong='" + isIsStrong() + "'" +
             ", season='" + getSeason() + "'" +
             ", manufacturer='" + getManufacturer() + "'" +
-            ", technology='" + getTechnology() + "'" +
             ", price=" + getPrice() +
             ", count=" + getCount() +
             "}";

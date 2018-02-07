@@ -10,26 +10,6 @@
     ],
     "fields": [
         {
-            "fieldName": "title",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "isStrong",
-            "fieldType": "Boolean"
-        },
-        {
-            "fieldName": "radius",
-            "fieldType": "Double"
-        },
-        {
-            "fieldName": "releaseYear",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "size",
-            "fieldType": "String"
-        },
-        {
             "fieldName": "mark",
             "fieldType": "String"
         },
@@ -38,8 +18,29 @@
             "fieldType": "String"
         },
         {
+            "fieldName": "radius",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "size",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "technology",
+            "fieldType": "Technology",
+            "fieldValues": "DEFAULT,RUNFLAT"
+        },
+        {
             "fieldName": "index",
             "fieldType": "String"
+        },
+        {
+            "fieldName": "releaseYear",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "isStrong",
+            "fieldType": "Boolean"
         },
         {
             "fieldName": "season",
@@ -50,11 +51,6 @@
             "fieldName": "manufacturer",
             "fieldType": "Manufacturer",
             "fieldValues": "EURO,CHINA"
-        },
-        {
-            "fieldName": "technology",
-            "fieldType": "Technology",
-            "fieldValues": "DEFAULT,RUNFLAT"
         },
         {
             "fieldName": "price",

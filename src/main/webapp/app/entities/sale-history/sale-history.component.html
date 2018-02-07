@@ -47,7 +47,7 @@
                 <td>{{saleHistory.sum}}</td>
                 <td>
                     <div *ngIf="saleHistory.tire">
-                        <a [routerLink]="['../tire', saleHistory.tire?.id ]" >{{saleHistory.tire?.title}}</a>
+                        <a [routerLink]="['../tire', saleHistory.tire?.id ]" >{{saleHistory.tire?.model}}</a>
                     </div>
                 </td>
                 <td>{{saleHistory.createdBy}}</td>

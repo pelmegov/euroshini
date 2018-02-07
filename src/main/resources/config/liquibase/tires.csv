@@ -1,6 +1,6 @@
-id;title;is_strong;radius;release_year;jhi_size;mark;model;jhi_index;price;season;manufacturer;technology;sale_point_id;count;created_by;last_modified_by
+id;is_strong;radius;release_year;jhi_size;mark;model;jhi_index;price;season;manufacturer;technology;sale_point_id;count;created_by;last_modified_by
 
-1;Шина Mischelin;false;15;2015;195/60;Michelin;Energy Saver;91H;2500;WINTER;EURO;DEFAULT;1;40;system;system
-2;Шина ContiPremium;true;16;2013;215/70;Continental;ContiPremiumContact;109/107T;5000;SUMMER;EURO;DEFAULT;1;30;system;system
-3;Шина Dunlop;false;20;2010;200/50;Dunlop;SP Sport 01;99H;4500;ALL_SEASON;CHINA;DEFAULT;1;10;system;system
-4;Шина GoodYear;false;17;2015;190/50;GoodYear;EfficientGrip;91V;3450;SUMMER;CHINA;RUNFLAT;2;20;system;system
+1;false;15;2015;195/60;Michelin;Energy Saver;91H;2500;WINTER;EURO;DEFAULT;1;40;system;system
+2;true;16;2013;215/70;Continental;ContiPremiumContact;109/107T;5000;SUMMER;EURO;DEFAULT;1;30;system;system
+3;false;20;2010;200/50;Dunlop;SP Sport 01;99H;4500;ALL_SEASON;CHINA;DEFAULT;1;10;system;system
+4;false;17;2015;190/50;GoodYear;EfficientGrip;91V;3450;SUMMER;CHINA;RUNFLAT;2;20;system;system

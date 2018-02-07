@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.Objects;
 
 import ru.pelmegov.euroshini.domain.SalePoint;
+import ru.pelmegov.euroshini.domain.enumeration.Technology;
 import ru.pelmegov.euroshini.domain.enumeration.Season;
 import ru.pelmegov.euroshini.domain.enumeration.Manufacturer;
-import ru.pelmegov.euroshini.domain.enumeration.Technology;
 
 /**
  * A DTO for the Tire entity.
@@ -20,27 +20,25 @@ public class TireDTO implements Serializable {
 
     private Long id;
 
-    private String title;
-
-    private Boolean isStrong;
-
-    private Double radius;
-
-    private String releaseYear;
-
-    private String size;
-
     private String mark;
 
     private String model;
 
+    private Double radius;
+
+    private String size;
+
+    private Technology technology;
+
     private String index;
+
+    private String releaseYear;
+
+    private Boolean isStrong;
 
     private Season season;
 
     private Manufacturer manufacturer;
-
-    private Technology technology;
 
     private BigDecimal price;
 
@@ -64,46 +62,6 @@ public class TireDTO implements Serializable {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Boolean isIsStrong() {
-        return isStrong;
-    }
-
-    public void setIsStrong(Boolean isStrong) {
-        this.isStrong = isStrong;
-    }
-
-    public Double getRadius() {
-        return radius;
-    }
-
-    public void setRadius(Double radius) {
-        this.radius = radius;
-    }
-
-    public String getReleaseYear() {
-        return releaseYear;
-    }
-
-    public void setReleaseYear(String releaseYear) {
-        this.releaseYear = releaseYear;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
     public String getMark() {
         return mark;
     }
@@ -120,12 +78,52 @@ public class TireDTO implements Serializable {
         this.model = model;
     }
 
+    public Double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(Double radius) {
+        this.radius = radius;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public Technology getTechnology() {
+        return technology;
+    }
+
+    public void setTechnology(Technology technology) {
+        this.technology = technology;
+    }
+
     public String getIndex() {
         return index;
     }
 
     public void setIndex(String index) {
         this.index = index;
+    }
+
+    public String getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(String releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public Boolean isIsStrong() {
+        return isStrong;
+    }
+
+    public void setIsStrong(Boolean isStrong) {
+        this.isStrong = isStrong;
     }
 
     public Season getSeason() {
@@ -142,14 +140,6 @@ public class TireDTO implements Serializable {
 
     public void setManufacturer(Manufacturer manufacturer) {
         this.manufacturer = manufacturer;
-    }
-
-    public Technology getTechnology() {
-        return technology;
-    }
-
-    public void setTechnology(Technology technology) {
-        this.technology = technology;
     }
 
     public BigDecimal getPrice() {
@@ -233,17 +223,16 @@ public class TireDTO implements Serializable {
     public String toString() {
         return "TireDTO{" +
             "id=" + getId() +
-            ", title='" + getTitle() + "'" +
-            ", isStrong='" + isIsStrong() + "'" +
-            ", radius=" + getRadius() +
-            ", releaseYear='" + getReleaseYear() + "'" +
-            ", size='" + getSize() + "'" +
             ", mark='" + getMark() + "'" +
             ", model='" + getModel() + "'" +
+            ", radius=" + getRadius() +
+            ", size='" + getSize() + "'" +
+            ", technology='" + getTechnology() + "'" +
             ", index='" + getIndex() + "'" +
+            ", releaseYear='" + getReleaseYear() + "'" +
+            ", isStrong='" + isIsStrong() + "'" +
             ", season='" + getSeason() + "'" +
             ", manufacturer='" + getManufacturer() + "'" +
-            ", technology='" + getTechnology() + "'" +
             ", price=" + getPrice() +
             ", count=" + getCount() +
             "}";

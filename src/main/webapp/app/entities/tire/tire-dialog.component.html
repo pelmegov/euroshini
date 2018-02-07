@@ -13,31 +13,6 @@
                    [(ngModel)]="tire.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" for="field_title">Title</label>
-            <input type="text" class="form-control" name="title" id="field_title"
-                [(ngModel)]="tire.title" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_isStrong">Is Strong</label>
-            <input type="checkbox" class="form-control" name="isStrong" id="field_isStrong"
-                [(ngModel)]="tire.isStrong" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_radius">Radius</label>
-            <input type="number" class="form-control" name="radius" id="field_radius"
-                [(ngModel)]="tire.radius" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_releaseYear">Release Year</label>
-            <input type="text" class="form-control" name="releaseYear" id="field_releaseYear"
-                [(ngModel)]="tire.releaseYear" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_size">Size</label>
-            <input type="text" class="form-control" name="size" id="field_size"
-                [(ngModel)]="tire.size" />
-        </div>
-        <div class="form-group">
             <label class="form-control-label" for="field_mark">Mark</label>
             <input type="text" class="form-control" name="mark" id="field_mark"
                 [(ngModel)]="tire.mark" />
@@ -48,9 +23,36 @@
                 [(ngModel)]="tire.model" />
         </div>
         <div class="form-group">
+            <label class="form-control-label" for="field_radius">Radius</label>
+            <input type="number" class="form-control" name="radius" id="field_radius"
+                [(ngModel)]="tire.radius" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_size">Size</label>
+            <input type="text" class="form-control" name="size" id="field_size"
+                [(ngModel)]="tire.size" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_technology">Technology</label>
+            <select class="form-control" name="technology" [(ngModel)]="tire.technology" id="field_technology" >
+                <option value="DEFAULT">DEFAULT</option>
+                <option value="RUNFLAT">RUNFLAT</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label class="form-control-label" for="field_index">Index</label>
             <input type="text" class="form-control" name="index" id="field_index"
                 [(ngModel)]="tire.index" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_releaseYear">Release Year</label>
+            <input type="text" class="form-control" name="releaseYear" id="field_releaseYear"
+                [(ngModel)]="tire.releaseYear" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_isStrong">Is Strong</label>
+            <input type="checkbox" class="form-control" name="isStrong" id="field_isStrong"
+                [(ngModel)]="tire.isStrong" />
         </div>
         <div class="form-group">
             <label class="form-control-label" for="field_season">Season</label>
@@ -67,14 +69,6 @@
                 <option value="CHINA">CHINA</option>
             </select>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" for="field_technology">Technology</label>
-            <select class="form-control" name="technology" [(ngModel)]="tire.technology" id="field_technology" >
-                <option value="DEFAULT">DEFAULT</option>
-                <option value="RUNFLAT">RUNFLAT</option>
-            </select>
-        </div>
-
         <div class="form-group">
             <label class="form-control-label" for="field_price">Price</label>
             <input type="number" class="form-control" name="price" id="field_price"

@@ -33,9 +33,9 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import ru.pelmegov.euroshini.domain.enumeration.Technology;
 import ru.pelmegov.euroshini.domain.enumeration.Season;
 import ru.pelmegov.euroshini.domain.enumeration.Manufacturer;
-import ru.pelmegov.euroshini.domain.enumeration.Technology;
 /**
  * Test class for the TireResource REST controller.
  *
@@ -45,38 +45,35 @@ import ru.pelmegov.euroshini.domain.enumeration.Technology;
 @SpringBootTest(classes = EuroshiniApp.class)
 public class TireResourceIntTest {
 
-    private static final String DEFAULT_TITLE = "AAAAAAAAAA";
-    private static final String UPDATED_TITLE = "BBBBBBBBBB";
-
-    private static final Boolean DEFAULT_IS_STRONG = false;
-    private static final Boolean UPDATED_IS_STRONG = true;
-
-    private static final Double DEFAULT_RADIUS = 1D;
-    private static final Double UPDATED_RADIUS = 2D;
-
-    private static final String DEFAULT_RELEASE_YEAR = "AAAAAAAAAA";
-    private static final String UPDATED_RELEASE_YEAR = "BBBBBBBBBB";
-
-    private static final String DEFAULT_SIZE = "AAAAAAAAAA";
-    private static final String UPDATED_SIZE = "BBBBBBBBBB";
-
     private static final String DEFAULT_MARK = "AAAAAAAAAA";
     private static final String UPDATED_MARK = "BBBBBBBBBB";
 
     private static final String DEFAULT_MODEL = "AAAAAAAAAA";
     private static final String UPDATED_MODEL = "BBBBBBBBBB";
 
+    private static final Double DEFAULT_RADIUS = 1D;
+    private static final Double UPDATED_RADIUS = 2D;
+
+    private static final String DEFAULT_SIZE = "AAAAAAAAAA";
+    private static final String UPDATED_SIZE = "BBBBBBBBBB";
+
+    private static final Technology DEFAULT_TECHNOLOGY = Technology.DEFAULT;
+    private static final Technology UPDATED_TECHNOLOGY = Technology.RUNFLAT;
+
     private static final String DEFAULT_INDEX = "AAAAAAAAAA";
     private static final String UPDATED_INDEX = "BBBBBBBBBB";
+
+    private static final String DEFAULT_RELEASE_YEAR = "AAAAAAAAAA";
+    private static final String UPDATED_RELEASE_YEAR = "BBBBBBBBBB";
+
+    private static final Boolean DEFAULT_IS_STRONG = false;
+    private static final Boolean UPDATED_IS_STRONG = true;
 
     private static final Season DEFAULT_SEASON = Season.WINTER;
     private static final Season UPDATED_SEASON = Season.SUMMER;
 
     private static final Manufacturer DEFAULT_MANUFACTURER = Manufacturer.EURO;
     private static final Manufacturer UPDATED_MANUFACTURER = Manufacturer.CHINA;
-
-    private static final Technology DEFAULT_TECHNOLOGY = Technology.DEFAULT;
-    private static final Technology UPDATED_TECHNOLOGY = Technology.RUNFLAT;
 
     private static final BigDecimal DEFAULT_PRICE = new BigDecimal(1);
     private static final BigDecimal UPDATED_PRICE = new BigDecimal(2);
@@ -128,17 +125,16 @@ public class TireResourceIntTest {
      */
     public static Tire createEntity(EntityManager em) {
         Tire tire = new Tire()
-            .title(DEFAULT_TITLE)
-            .isStrong(DEFAULT_IS_STRONG)
-            .radius(DEFAULT_RADIUS)
-            .releaseYear(DEFAULT_RELEASE_YEAR)
-            .size(DEFAULT_SIZE)
             .mark(DEFAULT_MARK)
             .model(DEFAULT_MODEL)
+            .radius(DEFAULT_RADIUS)
+            .size(DEFAULT_SIZE)
+            .technology(DEFAULT_TECHNOLOGY)
             .index(DEFAULT_INDEX)
+            .releaseYear(DEFAULT_RELEASE_YEAR)
+            .isStrong(DEFAULT_IS_STRONG)
             .season(DEFAULT_SEASON)
             .manufacturer(DEFAULT_MANUFACTURER)
-            .technology(DEFAULT_TECHNOLOGY)
             .price(DEFAULT_PRICE)
             .count(DEFAULT_COUNT);
         return tire;
@@ -166,17 +162,16 @@ public class TireResourceIntTest {
         List<Tire> tireList = tireRepository.findAll();
         assertThat(tireList).hasSize(databaseSizeBeforeCreate + 1);
         Tire testTire = tireList.get(tireList.size() - 1);
-        assertThat(testTire.getTitle()).isEqualTo(DEFAULT_TITLE);
-        assertThat(testTire.isIsStrong()).isEqualTo(DEFAULT_IS_STRONG);
-        assertThat(testTire.getRadius()).isEqualTo(DEFAULT_RADIUS);
-        assertThat(testTire.getReleaseYear()).isEqualTo(DEFAULT_RELEASE_YEAR);
-        assertThat(testTire.getSize()).isEqualTo(DEFAULT_SIZE);
         assertThat(testTire.getMark()).isEqualTo(DEFAULT_MARK);
         assertThat(testTire.getModel()).isEqualTo(DEFAULT_MODEL);
+        assertThat(testTire.getRadius()).isEqualTo(DEFAULT_RADIUS);
+        assertThat(testTire.getSize()).isEqualTo(DEFAULT_SIZE);
+        assertThat(testTire.getTechnology()).isEqualTo(DEFAULT_TECHNOLOGY);
         assertThat(testTire.getIndex()).isEqualTo(DEFAULT_INDEX);
+        assertThat(testTire.getReleaseYear()).isEqualTo(DEFAULT_RELEASE_YEAR);
+        assertThat(testTire.isIsStrong()).isEqualTo(DEFAULT_IS_STRONG);
         assertThat(testTire.getSeason()).isEqualTo(DEFAULT_SEASON);
         assertThat(testTire.getManufacturer()).isEqualTo(DEFAULT_MANUFACTURER);
-        assertThat(testTire.getTechnology()).isEqualTo(DEFAULT_TECHNOLOGY);
         assertThat(testTire.getPrice()).isEqualTo(DEFAULT_PRICE);
         assertThat(testTire.getCount()).isEqualTo(DEFAULT_COUNT);
 
@@ -216,17 +211,16 @@ public class TireResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(tire.getId().intValue())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())))
-            .andExpect(jsonPath("$.[*].isStrong").value(hasItem(DEFAULT_IS_STRONG.booleanValue())))
-            .andExpect(jsonPath("$.[*].radius").value(hasItem(DEFAULT_RADIUS.doubleValue())))
-            .andExpect(jsonPath("$.[*].releaseYear").value(hasItem(DEFAULT_RELEASE_YEAR.toString())))
-            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
             .andExpect(jsonPath("$.[*].mark").value(hasItem(DEFAULT_MARK.toString())))
             .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
+            .andExpect(jsonPath("$.[*].radius").value(hasItem(DEFAULT_RADIUS.doubleValue())))
+            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
             .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
+            .andExpect(jsonPath("$.[*].releaseYear").value(hasItem(DEFAULT_RELEASE_YEAR.toString())))
+            .andExpect(jsonPath("$.[*].isStrong").value(hasItem(DEFAULT_IS_STRONG.booleanValue())))
             .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
-            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)));
     }
@@ -242,17 +236,16 @@ public class TireResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(tire.getId().intValue()))
-            .andExpect(jsonPath("$.title").value(DEFAULT_TITLE.toString()))
-            .andExpect(jsonPath("$.isStrong").value(DEFAULT_IS_STRONG.booleanValue()))
-            .andExpect(jsonPath("$.radius").value(DEFAULT_RADIUS.doubleValue()))
-            .andExpect(jsonPath("$.releaseYear").value(DEFAULT_RELEASE_YEAR.toString()))
-            .andExpect(jsonPath("$.size").value(DEFAULT_SIZE.toString()))
             .andExpect(jsonPath("$.mark").value(DEFAULT_MARK.toString()))
             .andExpect(jsonPath("$.model").value(DEFAULT_MODEL.toString()))
+            .andExpect(jsonPath("$.radius").value(DEFAULT_RADIUS.doubleValue()))
+            .andExpect(jsonPath("$.size").value(DEFAULT_SIZE.toString()))
+            .andExpect(jsonPath("$.technology").value(DEFAULT_TECHNOLOGY.toString()))
             .andExpect(jsonPath("$.index").value(DEFAULT_INDEX.toString()))
+            .andExpect(jsonPath("$.releaseYear").value(DEFAULT_RELEASE_YEAR.toString()))
+            .andExpect(jsonPath("$.isStrong").value(DEFAULT_IS_STRONG.booleanValue()))
             .andExpect(jsonPath("$.season").value(DEFAULT_SEASON.toString()))
             .andExpect(jsonPath("$.manufacturer").value(DEFAULT_MANUFACTURER.toString()))
-            .andExpect(jsonPath("$.technology").value(DEFAULT_TECHNOLOGY.toString()))
             .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
             .andExpect(jsonPath("$.count").value(DEFAULT_COUNT));
     }
@@ -278,17 +271,16 @@ public class TireResourceIntTest {
         // Disconnect from session so that the updates on updatedTire are not directly saved in db
         em.detach(updatedTire);
         updatedTire
-            .title(UPDATED_TITLE)
-            .isStrong(UPDATED_IS_STRONG)
-            .radius(UPDATED_RADIUS)
-            .releaseYear(UPDATED_RELEASE_YEAR)
-            .size(UPDATED_SIZE)
             .mark(UPDATED_MARK)
             .model(UPDATED_MODEL)
+            .radius(UPDATED_RADIUS)
+            .size(UPDATED_SIZE)
+            .technology(UPDATED_TECHNOLOGY)
             .index(UPDATED_INDEX)
+            .releaseYear(UPDATED_RELEASE_YEAR)
+            .isStrong(UPDATED_IS_STRONG)
             .season(UPDATED_SEASON)
             .manufacturer(UPDATED_MANUFACTURER)
-            .technology(UPDATED_TECHNOLOGY)
             .price(UPDATED_PRICE)
             .count(UPDATED_COUNT);
         TireDTO tireDTO = tireMapper.toDto(updatedTire);
@@ -302,17 +294,16 @@ public class TireResourceIntTest {
         List<Tire> tireList = tireRepository.findAll();
         assertThat(tireList).hasSize(databaseSizeBeforeUpdate);
         Tire testTire = tireList.get(tireList.size() - 1);
-        assertThat(testTire.getTitle()).isEqualTo(UPDATED_TITLE);
-        assertThat(testTire.isIsStrong()).isEqualTo(UPDATED_IS_STRONG);
-        assertThat(testTire.getRadius()).isEqualTo(UPDATED_RADIUS);
-        assertThat(testTire.getReleaseYear()).isEqualTo(UPDATED_RELEASE_YEAR);
-        assertThat(testTire.getSize()).isEqualTo(UPDATED_SIZE);
         assertThat(testTire.getMark()).isEqualTo(UPDATED_MARK);
         assertThat(testTire.getModel()).isEqualTo(UPDATED_MODEL);
+        assertThat(testTire.getRadius()).isEqualTo(UPDATED_RADIUS);
+        assertThat(testTire.getSize()).isEqualTo(UPDATED_SIZE);
+        assertThat(testTire.getTechnology()).isEqualTo(UPDATED_TECHNOLOGY);
         assertThat(testTire.getIndex()).isEqualTo(UPDATED_INDEX);
+        assertThat(testTire.getReleaseYear()).isEqualTo(UPDATED_RELEASE_YEAR);
+        assertThat(testTire.isIsStrong()).isEqualTo(UPDATED_IS_STRONG);
         assertThat(testTire.getSeason()).isEqualTo(UPDATED_SEASON);
         assertThat(testTire.getManufacturer()).isEqualTo(UPDATED_MANUFACTURER);
-        assertThat(testTire.getTechnology()).isEqualTo(UPDATED_TECHNOLOGY);
         assertThat(testTire.getPrice()).isEqualTo(UPDATED_PRICE);
         assertThat(testTire.getCount()).isEqualTo(UPDATED_COUNT);
 
@@ -374,17 +365,16 @@ public class TireResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(tire.getId().intValue())))
-            .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE.toString())))
-            .andExpect(jsonPath("$.[*].isStrong").value(hasItem(DEFAULT_IS_STRONG.booleanValue())))
-            .andExpect(jsonPath("$.[*].radius").value(hasItem(DEFAULT_RADIUS.doubleValue())))
-            .andExpect(jsonPath("$.[*].releaseYear").value(hasItem(DEFAULT_RELEASE_YEAR.toString())))
-            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
             .andExpect(jsonPath("$.[*].mark").value(hasItem(DEFAULT_MARK.toString())))
             .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
+            .andExpect(jsonPath("$.[*].radius").value(hasItem(DEFAULT_RADIUS.doubleValue())))
+            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
             .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
+            .andExpect(jsonPath("$.[*].releaseYear").value(hasItem(DEFAULT_RELEASE_YEAR.toString())))
+            .andExpect(jsonPath("$.[*].isStrong").value(hasItem(DEFAULT_IS_STRONG.booleanValue())))
             .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
             .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
-            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)));
     }
