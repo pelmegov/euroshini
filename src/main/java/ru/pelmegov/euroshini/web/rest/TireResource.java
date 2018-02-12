@@ -1,6 +1,7 @@
 package ru.pelmegov.euroshini.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import org.springframework.util.NumberUtils;
 import ru.pelmegov.euroshini.domain.Tire;
 
 import ru.pelmegov.euroshini.repository.TireRepository;
@@ -25,8 +26,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -159,6 +158,12 @@ public class TireResource {
     public ResponseEntity<List<TireDTO>> searchTires(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Tires for query {}", query);
         Page<Tire> page = tireSearchRepository.search(queryStringQuery(query), pageable);
+
+        if(page.getTotalElements() == 0) {
+            Double tryParseDouble = NumberUtils.parseNumber(query, Double.class);
+            page = tireSearchRepository.search(queryStringQuery(tryParseDouble.toString()), pageable);
+        }
+
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/tires");
         return new ResponseEntity<>(tireMapper.toDto(page.getContent()), headers, HttpStatus.OK);
     }
