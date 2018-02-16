@@ -67,7 +67,7 @@ public class TireResource {
             throw new BadRequestAlertException("A new tire cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Tire tire = tireMapper.toEntity(tireDTO);
-        tire = tireRepository.save(tire);
+        tire = tireRepository.saveAndFlush(tire);
         TireDTO result = tireMapper.toDto(tire);
         tireSearchRepository.save(tire);
         return ResponseEntity.created(new URI("/api/tires/" + result.getId()))

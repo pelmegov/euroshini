@@ -8,10 +8,12 @@
     <include file="config/liquibase/changelog/20180123153328_added_entity_SalePoint.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180123153329_added_entity_Tire.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180127083220_added_entity_SaleHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180130181749_added_entity_RevenueHistory.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20180123153329_added_entity_constraints_Tire.xml" relativeToChangelogFile="false"/>
     <!--<include file="config/liquibase/changelog/20180123153328_added_entity_constraints_SalePoint.xml" relativeToChangelogFile="false"/>-->
     <include file="config/liquibase/changelog/20180127083220_added_entity_constraints_SaleHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180130181749_added_entity_constraints_RevenueHistory.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 
     <!-- custom initial schema -->

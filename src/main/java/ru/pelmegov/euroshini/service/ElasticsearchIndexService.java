@@ -37,6 +37,10 @@ public class ElasticsearchIndexService {
 
     private final Logger log = LoggerFactory.getLogger(ElasticsearchIndexService.class);
 
+    private final RevenueHistoryRepository revenueHistoryRepository;
+
+    private final RevenueHistorySearchRepository revenueHistorySearchRepository;
+
     private final SaleHistoryRepository saleHistoryRepository;
 
     private final SaleHistorySearchRepository saleHistorySearchRepository;
@@ -60,6 +64,8 @@ public class ElasticsearchIndexService {
     public ElasticsearchIndexService(
         UserRepository userRepository,
         UserSearchRepository userSearchRepository,
+        RevenueHistoryRepository revenueHistoryRepository,
+        RevenueHistorySearchRepository revenueHistorySearchRepository,
         SaleHistoryRepository saleHistoryRepository,
         SaleHistorySearchRepository saleHistorySearchRepository,
         SalePointRepository salePointRepository,
@@ -69,6 +75,8 @@ public class ElasticsearchIndexService {
         ElasticsearchTemplate elasticsearchTemplate) {
         this.userRepository = userRepository;
         this.userSearchRepository = userSearchRepository;
+        this.revenueHistoryRepository = revenueHistoryRepository;
+        this.revenueHistorySearchRepository = revenueHistorySearchRepository;
         this.saleHistoryRepository = saleHistoryRepository;
         this.saleHistorySearchRepository = saleHistorySearchRepository;
         this.salePointRepository = salePointRepository;
@@ -83,6 +91,7 @@ public class ElasticsearchIndexService {
     public void reindexAll() {
         if(reindexLock.tryLock()) {
             try {
+                reindexForClass(RevenueHistory.class, revenueHistoryRepository, revenueHistorySearchRepository);
                 reindexForClass(SaleHistory.class, saleHistoryRepository, saleHistorySearchRepository);
                 reindexForClass(SalePoint.class, salePointRepository, salePointSearchRepository);
                 reindexForClass(Tire.class, tireRepository, tireSearchRepository);

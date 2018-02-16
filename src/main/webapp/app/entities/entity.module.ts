@@ -3,6 +3,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { EuroshiniTireModule } from './tire/tire.module';
 import { EuroshiniSalePointModule } from './sale-point/sale-point.module';
 import { EuroshiniSaleHistoryModule } from './sale-history/sale-history.module';
+import { EuroshiniRevenueHistoryModule } from './revenue-history/revenue-history.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -10,6 +11,7 @@ import { EuroshiniSaleHistoryModule } from './sale-history/sale-history.module';
         EuroshiniTireModule,
         EuroshiniSalePointModule,
         EuroshiniSaleHistoryModule,
+        EuroshiniRevenueHistoryModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

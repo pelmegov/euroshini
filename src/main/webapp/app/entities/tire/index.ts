@@ -3,6 +3,7 @@ export * from './tire-popup.service';
 export * from './tire.service';
 export * from './tire-dialog.component';
 export * from './tire-sale-dialog.component';
+export * from './tire-revenue-dialog.component';
 export * from './tire-delete-dialog.component';
 export * from './tire-detail.component';
 export * from './tire.component';

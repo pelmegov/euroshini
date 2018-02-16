@@ -77,10 +77,17 @@
                             <span class="d-none d-md-inline">Sale</span>
                         </button>
                         <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'tire/'+ tire.id + '/revenue'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-success btn-sm">
+                            <span class="fa fa-plus-square"></span>
+                            <span class="d-none d-md-inline">Revenue</span>
+                        </button>
+                        <button type="submit"
                                 [routerLink]="['../tire', tire.id ]"
                                 class="btn btn-info btn-sm">
                             <span class="fa fa-eye"></span>
-                            <span class="d-none d-md-inline">View</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/', { outlets: { popup: 'tire/'+ tire.id + '/edit'} }]"
@@ -88,15 +95,6 @@
                                 queryParamsHandling="merge"
                                 class="btn btn-primary btn-sm">
                             <span class="fa fa-pencil"></span>
-                            <span class="d-none d-md-inline">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'tire/'+ tire.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
-                            <span class="d-none d-md-inline">Delete</span>
                         </button>
                     </div>
                 </td>

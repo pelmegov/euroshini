@@ -16,14 +16,12 @@
         </div>
     </div>
     <br/>
-    <div class="table-responsive" *ngIf="saleHistories">
+    <div class="table-responsive" *ngIf="revenueHistories">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="count"><span>Count</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="price"><span>Price</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="sum"><span>Sum</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="tire.id"><span>Tire</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="createdBy"><span>Created By</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="createdDate"><span>Created Date</span> <span class="fa fa-sort"></span></th>
@@ -31,42 +29,21 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let saleHistory of saleHistories ;trackBy: trackId">
-                <td><a [routerLink]="['../sale-history', saleHistory.id ]">{{saleHistory.id}}</a></td>
-                <td>{{saleHistory.count}}</td>
-                <td>{{saleHistory.price}}</td>
-                <td>{{saleHistory.sum}}</td>
+            <tr *ngFor="let revenueHistory of revenueHistories ;trackBy: trackId">
+                <td><a [routerLink]="['../revenue-history', revenueHistory.id ]">{{revenueHistory.id}}</a></td>
+                <td>{{revenueHistory.count}}</td>
                 <td>
-                    <div *ngIf="saleHistory.tire">
-                        <a [routerLink]="['../tire', saleHistory.tire?.id ]" >{{saleHistory.tire?.model}}</a>
+                    <div *ngIf="revenueHistory.tire">
+                        <a [routerLink]="['../tire', revenueHistory.tire?.id ]" >{{revenueHistory.tire?.model}}</a>
                     </div>
                 </td>
-                <td>{{saleHistory.createdBy}}</td>
-                <td>{{saleHistory.createdDate | date:'dd/MM/yy HH:mm'}}</td>
-
-                <td class="text-right">
-                    <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
-                                [routerLink]="['../sale-history', saleHistory.id ]"
-                                class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
-                            <span class="d-none d-md-inline">View</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'sale-history/'+ saleHistory.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
-                            <span class="d-none d-md-inline">Delete</span>
-                        </button>
-                    </div>
-                </td>
+                <td>{{revenueHistory.createdBy}}</td>
+                <td>{{revenueHistory.createdDate | date:'dd/MM/yy HH:mm'}}</td>
             </tr>
             </tbody>
         </table>
     </div>
-    <div *ngIf="saleHistories && saleHistories.length">
+    <div *ngIf="revenueHistories && revenueHistories.length">
         <div class="row justify-content-center">
             <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>

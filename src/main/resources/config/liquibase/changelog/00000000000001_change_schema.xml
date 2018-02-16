@@ -47,5 +47,23 @@
             <column name="last_modified_date" type="timestamp"/>
         </addColumn>
 
+        <!-- create columns in revenue_history table for auditing -->
+        <addColumn tableName="revenue_history">
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="revenue_history">
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="revenue_history">
+            <column name="last_modified_by" type="varchar(50)"/>
+        </addColumn>
+        <addColumn tableName="revenue_history">
+            <column name="last_modified_date" type="timestamp"/>
+        </addColumn>
+
     </changeSet>
 </databaseChangeLog>

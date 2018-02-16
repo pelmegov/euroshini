@@ -11,6 +11,7 @@ import { TirePopupService } from './tire-popup.service';
 import { TireService } from './tire.service';
 import { SalePoint, SalePointService } from '../sale-point';
 import { ResponseWrapper } from '../../shared';
+import { RevenueHistory, RevenueHistoryService } from '../revenue-history';
 
 @Component({
     selector: 'jhi-tire-dialog',
@@ -21,6 +22,8 @@ export class TireDialogComponent implements OnInit {
     tire: Tire;
     isSaving: boolean;
 
+    revenueHistoryPoint: RevenueHistory = new RevenueHistory();
+
     salepoints: SalePoint[];
 
     constructor(
@@ -28,7 +31,8 @@ export class TireDialogComponent implements OnInit {
         private jhiAlertService: JhiAlertService,
         private tireService: TireService,
         private salePointService: SalePointService,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private revenueHistoryService: RevenueHistoryService,
     ) {
     }
 
@@ -45,15 +49,28 @@ export class TireDialogComponent implements OnInit {
     save() {
         this.isSaving = true;
         if (this.tire.id !== undefined) {
-            this.subscribeToSaveResponse(
+            this.subscribeToUpdateResponse(
                 this.tireService.update(this.tire));
         } else {
             this.subscribeToSaveResponse(
-                this.tireService.create(this.tire));
+                (this.tireService.create(this.tire)));
         }
     }
 
     private subscribeToSaveResponse(result: Observable<Tire>) {
+        result.subscribe((res: Tire) => {
+                this.onSaveSuccess(res);
+                this.createRevenueHistoryPoint(res);
+            }, (res: Response) => this.onSaveError());
+    }
+
+    private createRevenueHistoryPoint(tire: Tire) {
+        this.revenueHistoryPoint.count = tire.count;
+        this.revenueHistoryPoint.tire = tire;
+        this.revenueHistoryService.create(this.revenueHistoryPoint).subscribe((res: RevenueHistory) => res);
+    }
+
+    private subscribeToUpdateResponse(result: Observable<Tire>) {
         result.subscribe((res: Tire) =>
             this.onSaveSuccess(res), (res: Response) => this.onSaveError());
     }
