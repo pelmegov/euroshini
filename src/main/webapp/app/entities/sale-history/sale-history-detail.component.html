@@ -19,7 +19,7 @@
         <dt><span>Tire</span></dt>
         <dd>
             <div *ngIf="saleHistory.tire">
-                <a [routerLink]="['/tire', saleHistory.tire?.id]">{{saleHistory.tire?.title}}</a>
+                <a [routerLink]="['/tire', saleHistory.tire?.id]">{{saleHistory.tire?.mark}} {{saleHistory.tire?.model}}</a>
             </div>
         </dd>
     </dl>
@@ -28,13 +28,5 @@
             (click)="previousState()"
             class="btn btn-info">
         <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'sale-history/'+ saleHistory.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
     </button>
 </div>

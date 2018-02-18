@@ -34,7 +34,7 @@
                 <td>{{revenueHistory.count}}</td>
                 <td>
                     <div *ngIf="revenueHistory.tire">
-                        <a [routerLink]="['../tire', revenueHistory.tire?.id ]" >{{revenueHistory.tire?.model}}</a>
+                        <a [routerLink]="['../tire', revenueHistory.tire?.id ]" >{{revenueHistory.tire?.mark}} {{revenueHistory.tire?.model}}</a>
                     </div>
                 </td>
                 <td>{{revenueHistory.createdBy}}</td>
