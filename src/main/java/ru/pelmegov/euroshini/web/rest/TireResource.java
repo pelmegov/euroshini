@@ -1,16 +1,7 @@
 package ru.pelmegov.euroshini.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.springframework.util.NumberUtils;
-import ru.pelmegov.euroshini.domain.Tire;
-
-import ru.pelmegov.euroshini.repository.TireRepository;
-import ru.pelmegov.euroshini.repository.search.TireSearchRepository;
-import ru.pelmegov.euroshini.web.rest.errors.BadRequestAlertException;
-import ru.pelmegov.euroshini.web.rest.util.HeaderUtil;
-import ru.pelmegov.euroshini.web.rest.util.PaginationUtil;
-import ru.pelmegov.euroshini.service.dto.TireDTO;
-import ru.pelmegov.euroshini.service.mapper.TireMapper;
+import com.google.common.primitives.Doubles;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +11,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.pelmegov.euroshini.domain.Tire;
+import ru.pelmegov.euroshini.repository.TireRepository;
+import ru.pelmegov.euroshini.repository.search.TireSearchRepository;
+import ru.pelmegov.euroshini.service.dto.TireDTO;
+import ru.pelmegov.euroshini.service.mapper.TireMapper;
+import ru.pelmegov.euroshini.web.rest.errors.BadRequestAlertException;
+import ru.pelmegov.euroshini.web.rest.util.HeaderUtil;
+import ru.pelmegov.euroshini.web.rest.util.PaginationUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -157,15 +154,27 @@ public class TireResource {
     @Timed
     public ResponseEntity<List<TireDTO>> searchTires(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Tires for query {}", query);
-        Page<Tire> page = tireSearchRepository.search(queryStringQuery(query), pageable);
-
-        if(page.getTotalElements() == 0) {
-            Double tryParseDouble = NumberUtils.parseNumber(query, Double.class);
-            page = tireSearchRepository.search(queryStringQuery(tryParseDouble.toString()), pageable);
-        }
-
+        Page<Tire> page = tireSearchRepository.search(queryStringQuery(query).escape(true), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/tires");
-        return new ResponseEntity<>(tireMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+
+        Set<Tire> result = getSubQueriesForSizeAndRadius(query, pageable);
+        result.addAll(page.getContent());
+        return new ResponseEntity<>(tireMapper.toDto(new ArrayList<>(result)), headers, HttpStatus.OK);
+    }
+
+    private Set<Tire> getSubQueriesForSizeAndRadius(String query, Pageable pageable) {
+        String[] subQueries = query.split(" ");
+
+        Set<Tire> result = new HashSet<>();
+        for(String subQuery : subQueries) {
+            if (Doubles.tryParse(subQuery) != null) {
+                result.addAll(tireSearchRepository.search(matchQuery("radius", subQuery), pageable).getContent());
+            }
+            if (subQuery.matches(".*[/].*")) {
+                result.addAll(tireSearchRepository.search(matchPhraseQuery("size", subQuery), pageable).getContent());
+            }
+        }
+        return result;
     }
 
 }
