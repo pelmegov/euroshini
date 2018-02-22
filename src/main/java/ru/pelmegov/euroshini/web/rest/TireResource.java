@@ -1,6 +1,8 @@
 package ru.pelmegov.euroshini.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Streams;
 import com.google.common.primitives.Doubles;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -154,26 +156,39 @@ public class TireResource {
     @Timed
     public ResponseEntity<List<TireDTO>> searchTires(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Tires for query {}", query);
-        Page<Tire> page = tireSearchRepository.search(queryStringQuery(query).escape(true), pageable);
+        Set<String> subQueries = new HashSet<>(Arrays.asList(query.split(" ")));
+
+        Set<Tire> sizeSearch = sizeSearch(subQueries, pageable);
+        Set<Tire> radiusSearch = radiusSearch(subQueries, pageable);
+
+        Page<Tire> page = tireSearchRepository.search(queryStringQuery(Joiner.on(" ").join(subQueries)).escape(true), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/tires");
 
-        Set<Tire> result = getSubQueriesForSizeAndRadius(query, pageable);
-        result.addAll(page.getContent());
+        HashSet<Tire> result = new HashSet<>(page.getContent());
+        result.addAll(radiusSearch);
+        result.addAll(sizeSearch);
+
         return new ResponseEntity<>(tireMapper.toDto(new ArrayList<>(result)), headers, HttpStatus.OK);
     }
 
-    private Set<Tire> getSubQueriesForSizeAndRadius(String query, Pageable pageable) {
-        String[] subQueries = query.split(" ");
-
+    private Set<Tire> radiusSearch(Set<String> subQueries, Pageable pageable) {
         Set<Tire> result = new HashSet<>();
-        for(String subQuery : subQueries) {
-            if (Doubles.tryParse(subQuery) != null) {
-                result.addAll(tireSearchRepository.search(matchQuery("radius", subQuery), pageable).getContent());
-            }
-            if (subQuery.matches(".*[/].*")) {
+        subQueries.stream()
+            .filter(subQuery -> Doubles.tryParse(subQuery) != null)
+            .forEach(subQuery -> result.addAll(tireSearchRepository.search(matchQuery("radius", subQuery), pageable).getContent()));
+        return result;
+    }
+
+    private Set<Tire> sizeSearch(Set<String> subQueries, Pageable pageable) {
+        Set<Tire> result = new HashSet<>();
+
+        Iterator<String> iterator = subQueries.iterator();
+        Streams.stream(iterator)
+            .filter(subQuery -> subQuery.matches(".*[/].*"))
+            .forEach(subQuery -> {
                 result.addAll(tireSearchRepository.search(matchPhraseQuery("size", subQuery), pageable).getContent());
-            }
-        }
+                iterator.remove();
+            });
         return result;
     }
 
