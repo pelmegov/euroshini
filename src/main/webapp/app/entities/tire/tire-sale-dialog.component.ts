@@ -104,6 +104,7 @@ export class TireSaleDialogComponent implements OnInit {
     }
 
     private onSaveSuccess(result: SaleHistory) {
+        this.eventManager.broadcast({name: 'tireListModification', content: 'OK'});
         this.eventManager.broadcast({name: 'saleHistoryListModification', content: 'OK'});
         this.isSaling = false;
         this.activeModal.dismiss(result);

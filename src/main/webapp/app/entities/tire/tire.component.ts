@@ -13,7 +13,7 @@ import { ITEMS_PER_PAGE, Principal, ResponseWrapper } from '../../shared';
 })
 export class TireComponent implements OnInit, OnDestroy {
 
-currentAccount: any;
+    currentAccount: any;
     tires: Tire[];
     error: any;
     success: any;
