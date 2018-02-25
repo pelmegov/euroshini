@@ -60,6 +60,7 @@ export class TireRevenueDialogComponent implements OnInit {
     private updateTireCount() {
         this.tire.count += this.count;
         this.tireService.update(this.tire).subscribe((tire) => {
+            this.eventManager.broadcast({name: 'tireListModification', content: 'OK'});
             this.tire = tire;
         });
     }
