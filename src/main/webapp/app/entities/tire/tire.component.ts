@@ -28,6 +28,7 @@ currentAccount: any;
     predicate: any;
     previousPage: any;
     reverse: any;
+    tireCount: number;
 
     constructor(
         private tireService: TireService,
@@ -68,6 +69,7 @@ currentAccount: any;
             (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
             (res: ResponseWrapper) => this.onError(res.json)
         );
+        this.getTireCount();
     }
     loadPage(page: number) {
         if (page !== this.previousPage) {
@@ -85,6 +87,15 @@ currentAccount: any;
             }
         });
         this.loadAll();
+    }
+
+    getTireCount() {
+        this.tireService.getTireCount().subscribe(
+            (res: ResponseWrapper) => {
+                this.tireCount = res.json;
+            },
+            (res: ResponseWrapper) => this.onError(res.json)
+        );
     }
 
     clear() {

@@ -12,5 +12,6 @@ import org.springframework.data.jpa.repository.*;
 @SuppressWarnings("unused")
 @Repository
 public interface TireRepository extends JpaRepository<Tire, Long> {
-
+    @Query("SELECT SUM(tire.count) from Tire tire")
+    int getTireCount();
 }

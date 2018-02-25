@@ -43,6 +43,11 @@ export class TireService {
             .map((res: Response) => this.convertResponse(res));
     }
 
+    getTireCount(): Observable<ResponseWrapper> {
+        return this.http.get(`${this.resourceUrl}/count`)
+            .map((res: Response) => this.simpleConvertResponse(res));
+    }
+
     delete(id: number): Observable<Response> {
         return this.http.delete(`${this.resourceUrl}/${id}`);
     }
@@ -60,6 +65,10 @@ export class TireService {
             result.push(this.convertItemFromServer(jsonResponse[i]));
         }
         return new ResponseWrapper(res.headers, result, res.status);
+    }
+
+    private simpleConvertResponse(res: Response) {
+        return new ResponseWrapper(res.headers, res.json(), res.status);
     }
 
     /**

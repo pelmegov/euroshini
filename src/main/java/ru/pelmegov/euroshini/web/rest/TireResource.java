@@ -115,6 +115,17 @@ public class TireResource {
     }
 
     /**
+     * GET /tires/count : get tires count
+     * @return tires count
+     */
+    @GetMapping("/tires/count")
+    @Timed
+    public ResponseEntity<Integer> getTireCount() {
+        log.debug("REST request to get a tireCount");
+        return new ResponseEntity<>(tireRepository.getTireCount(), HttpStatus.OK);
+    }
+
+    /**
      * GET  /tires/:id : get the "id" tire.
      *
      * @param id the id of the tireDTO to retrieve
@@ -148,7 +159,7 @@ public class TireResource {
      * SEARCH  /_search/tires?query=:query : search for the tire corresponding
      * to the query.
      *
-     * @param query the query of the tire search
+     * @param query    the query of the tire search
      * @param pageable the pagination information
      * @return the result of the search
      */
