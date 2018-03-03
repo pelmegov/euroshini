@@ -3,11 +3,15 @@ package ru.pelmegov.euroshini.web.rest;
 import ru.pelmegov.euroshini.EuroshiniApp;
 
 import ru.pelmegov.euroshini.domain.Tire;
+import ru.pelmegov.euroshini.domain.SalePoint;
 import ru.pelmegov.euroshini.repository.TireRepository;
+import ru.pelmegov.euroshini.service.TireService;
 import ru.pelmegov.euroshini.repository.search.TireSearchRepository;
 import ru.pelmegov.euroshini.service.dto.TireDTO;
 import ru.pelmegov.euroshini.service.mapper.TireMapper;
 import ru.pelmegov.euroshini.web.rest.errors.ExceptionTranslator;
+import ru.pelmegov.euroshini.service.dto.TireCriteria;
+import ru.pelmegov.euroshini.service.TireQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -88,7 +92,13 @@ public class TireResourceIntTest {
     private TireMapper tireMapper;
 
     @Autowired
+    private TireService tireService;
+
+    @Autowired
     private TireSearchRepository tireSearchRepository;
+
+    @Autowired
+    private TireQueryService tireQueryService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -109,7 +119,7 @@ public class TireResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final TireResource tireResource = new TireResource(tireRepository, tireMapper, tireSearchRepository);
+        final TireResource tireResource = new TireResource(tireService, tireQueryService);
         this.restTireMockMvc = MockMvcBuilders.standaloneSetup(tireResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -176,8 +186,8 @@ public class TireResourceIntTest {
         assertThat(testTire.getCount()).isEqualTo(DEFAULT_COUNT);
 
         // Validate the Tire in Elasticsearch
-//        Tire tireEs = tireSearchRepository.findOne(testTire.getId());
-//        assertThat(tireEs).isEqualToIgnoringGivenFields(testTire);
+        Tire tireEs = tireSearchRepository.findOne(testTire.getId());
+        assertThat(tireEs).isEqualToIgnoringGivenFields(testTire);
     }
 
     @Test
@@ -252,6 +262,553 @@ public class TireResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllTiresByMarkIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where mark equals to DEFAULT_MARK
+        defaultTireShouldBeFound("mark.equals=" + DEFAULT_MARK);
+
+        // Get all the tireList where mark equals to UPDATED_MARK
+        defaultTireShouldNotBeFound("mark.equals=" + UPDATED_MARK);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByMarkIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where mark in DEFAULT_MARK or UPDATED_MARK
+        defaultTireShouldBeFound("mark.in=" + DEFAULT_MARK + "," + UPDATED_MARK);
+
+        // Get all the tireList where mark equals to UPDATED_MARK
+        defaultTireShouldNotBeFound("mark.in=" + UPDATED_MARK);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByMarkIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where mark is not null
+        defaultTireShouldBeFound("mark.specified=true");
+
+        // Get all the tireList where mark is null
+        defaultTireShouldNotBeFound("mark.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByModelIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where model equals to DEFAULT_MODEL
+        defaultTireShouldBeFound("model.equals=" + DEFAULT_MODEL);
+
+        // Get all the tireList where model equals to UPDATED_MODEL
+        defaultTireShouldNotBeFound("model.equals=" + UPDATED_MODEL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByModelIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where model in DEFAULT_MODEL or UPDATED_MODEL
+        defaultTireShouldBeFound("model.in=" + DEFAULT_MODEL + "," + UPDATED_MODEL);
+
+        // Get all the tireList where model equals to UPDATED_MODEL
+        defaultTireShouldNotBeFound("model.in=" + UPDATED_MODEL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByModelIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where model is not null
+        defaultTireShouldBeFound("model.specified=true");
+
+        // Get all the tireList where model is null
+        defaultTireShouldNotBeFound("model.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByRadiusIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where radius equals to DEFAULT_RADIUS
+        defaultTireShouldBeFound("radius.equals=" + DEFAULT_RADIUS);
+
+        // Get all the tireList where radius equals to UPDATED_RADIUS
+        defaultTireShouldNotBeFound("radius.equals=" + UPDATED_RADIUS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByRadiusIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where radius in DEFAULT_RADIUS or UPDATED_RADIUS
+        defaultTireShouldBeFound("radius.in=" + DEFAULT_RADIUS + "," + UPDATED_RADIUS);
+
+        // Get all the tireList where radius equals to UPDATED_RADIUS
+        defaultTireShouldNotBeFound("radius.in=" + UPDATED_RADIUS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByRadiusIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where radius is not null
+        defaultTireShouldBeFound("radius.specified=true");
+
+        // Get all the tireList where radius is null
+        defaultTireShouldNotBeFound("radius.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresBySizeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where size equals to DEFAULT_SIZE
+        defaultTireShouldBeFound("size.equals=" + DEFAULT_SIZE);
+
+        // Get all the tireList where size equals to UPDATED_SIZE
+        defaultTireShouldNotBeFound("size.equals=" + UPDATED_SIZE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresBySizeIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where size in DEFAULT_SIZE or UPDATED_SIZE
+        defaultTireShouldBeFound("size.in=" + DEFAULT_SIZE + "," + UPDATED_SIZE);
+
+        // Get all the tireList where size equals to UPDATED_SIZE
+        defaultTireShouldNotBeFound("size.in=" + UPDATED_SIZE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresBySizeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where size is not null
+        defaultTireShouldBeFound("size.specified=true");
+
+        // Get all the tireList where size is null
+        defaultTireShouldNotBeFound("size.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByTechnologyIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where technology equals to DEFAULT_TECHNOLOGY
+        defaultTireShouldBeFound("technology.equals=" + DEFAULT_TECHNOLOGY);
+
+        // Get all the tireList where technology equals to UPDATED_TECHNOLOGY
+        defaultTireShouldNotBeFound("technology.equals=" + UPDATED_TECHNOLOGY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByTechnologyIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where technology in DEFAULT_TECHNOLOGY or UPDATED_TECHNOLOGY
+        defaultTireShouldBeFound("technology.in=" + DEFAULT_TECHNOLOGY + "," + UPDATED_TECHNOLOGY);
+
+        // Get all the tireList where technology equals to UPDATED_TECHNOLOGY
+        defaultTireShouldNotBeFound("technology.in=" + UPDATED_TECHNOLOGY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByTechnologyIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where technology is not null
+        defaultTireShouldBeFound("technology.specified=true");
+
+        // Get all the tireList where technology is null
+        defaultTireShouldNotBeFound("technology.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByIndexIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where index equals to DEFAULT_INDEX
+        defaultTireShouldBeFound("index.equals=" + DEFAULT_INDEX);
+
+        // Get all the tireList where index equals to UPDATED_INDEX
+        defaultTireShouldNotBeFound("index.equals=" + UPDATED_INDEX);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByIndexIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where index in DEFAULT_INDEX or UPDATED_INDEX
+        defaultTireShouldBeFound("index.in=" + DEFAULT_INDEX + "," + UPDATED_INDEX);
+
+        // Get all the tireList where index equals to UPDATED_INDEX
+        defaultTireShouldNotBeFound("index.in=" + UPDATED_INDEX);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByIndexIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where index is not null
+        defaultTireShouldBeFound("index.specified=true");
+
+        // Get all the tireList where index is null
+        defaultTireShouldNotBeFound("index.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByReleaseYearIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where releaseYear equals to DEFAULT_RELEASE_YEAR
+        defaultTireShouldBeFound("releaseYear.equals=" + DEFAULT_RELEASE_YEAR);
+
+        // Get all the tireList where releaseYear equals to UPDATED_RELEASE_YEAR
+        defaultTireShouldNotBeFound("releaseYear.equals=" + UPDATED_RELEASE_YEAR);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByReleaseYearIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where releaseYear in DEFAULT_RELEASE_YEAR or UPDATED_RELEASE_YEAR
+        defaultTireShouldBeFound("releaseYear.in=" + DEFAULT_RELEASE_YEAR + "," + UPDATED_RELEASE_YEAR);
+
+        // Get all the tireList where releaseYear equals to UPDATED_RELEASE_YEAR
+        defaultTireShouldNotBeFound("releaseYear.in=" + UPDATED_RELEASE_YEAR);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByReleaseYearIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where releaseYear is not null
+        defaultTireShouldBeFound("releaseYear.specified=true");
+
+        // Get all the tireList where releaseYear is null
+        defaultTireShouldNotBeFound("releaseYear.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByIsStrongIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where isStrong equals to DEFAULT_IS_STRONG
+        defaultTireShouldBeFound("isStrong.equals=" + DEFAULT_IS_STRONG);
+
+        // Get all the tireList where isStrong equals to UPDATED_IS_STRONG
+        defaultTireShouldNotBeFound("isStrong.equals=" + UPDATED_IS_STRONG);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByIsStrongIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where isStrong in DEFAULT_IS_STRONG or UPDATED_IS_STRONG
+        defaultTireShouldBeFound("isStrong.in=" + DEFAULT_IS_STRONG + "," + UPDATED_IS_STRONG);
+
+        // Get all the tireList where isStrong equals to UPDATED_IS_STRONG
+        defaultTireShouldNotBeFound("isStrong.in=" + UPDATED_IS_STRONG);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByIsStrongIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where isStrong is not null
+        defaultTireShouldBeFound("isStrong.specified=true");
+
+        // Get all the tireList where isStrong is null
+        defaultTireShouldNotBeFound("isStrong.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresBySeasonIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where season equals to DEFAULT_SEASON
+        defaultTireShouldBeFound("season.equals=" + DEFAULT_SEASON);
+
+        // Get all the tireList where season equals to UPDATED_SEASON
+        defaultTireShouldNotBeFound("season.equals=" + UPDATED_SEASON);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresBySeasonIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where season in DEFAULT_SEASON or UPDATED_SEASON
+        defaultTireShouldBeFound("season.in=" + DEFAULT_SEASON + "," + UPDATED_SEASON);
+
+        // Get all the tireList where season equals to UPDATED_SEASON
+        defaultTireShouldNotBeFound("season.in=" + UPDATED_SEASON);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresBySeasonIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where season is not null
+        defaultTireShouldBeFound("season.specified=true");
+
+        // Get all the tireList where season is null
+        defaultTireShouldNotBeFound("season.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByManufacturerIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where manufacturer equals to DEFAULT_MANUFACTURER
+        defaultTireShouldBeFound("manufacturer.equals=" + DEFAULT_MANUFACTURER);
+
+        // Get all the tireList where manufacturer equals to UPDATED_MANUFACTURER
+        defaultTireShouldNotBeFound("manufacturer.equals=" + UPDATED_MANUFACTURER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByManufacturerIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where manufacturer in DEFAULT_MANUFACTURER or UPDATED_MANUFACTURER
+        defaultTireShouldBeFound("manufacturer.in=" + DEFAULT_MANUFACTURER + "," + UPDATED_MANUFACTURER);
+
+        // Get all the tireList where manufacturer equals to UPDATED_MANUFACTURER
+        defaultTireShouldNotBeFound("manufacturer.in=" + UPDATED_MANUFACTURER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByManufacturerIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where manufacturer is not null
+        defaultTireShouldBeFound("manufacturer.specified=true");
+
+        // Get all the tireList where manufacturer is null
+        defaultTireShouldNotBeFound("manufacturer.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByPriceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where price equals to DEFAULT_PRICE
+        defaultTireShouldBeFound("price.equals=" + DEFAULT_PRICE);
+
+        // Get all the tireList where price equals to UPDATED_PRICE
+        defaultTireShouldNotBeFound("price.equals=" + UPDATED_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByPriceIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where price in DEFAULT_PRICE or UPDATED_PRICE
+        defaultTireShouldBeFound("price.in=" + DEFAULT_PRICE + "," + UPDATED_PRICE);
+
+        // Get all the tireList where price equals to UPDATED_PRICE
+        defaultTireShouldNotBeFound("price.in=" + UPDATED_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByPriceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where price is not null
+        defaultTireShouldBeFound("price.specified=true");
+
+        // Get all the tireList where price is null
+        defaultTireShouldNotBeFound("price.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByCountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where count equals to DEFAULT_COUNT
+        defaultTireShouldBeFound("count.equals=" + DEFAULT_COUNT);
+
+        // Get all the tireList where count equals to UPDATED_COUNT
+        defaultTireShouldNotBeFound("count.equals=" + UPDATED_COUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByCountIsInShouldWork() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where count in DEFAULT_COUNT or UPDATED_COUNT
+        defaultTireShouldBeFound("count.in=" + DEFAULT_COUNT + "," + UPDATED_COUNT);
+
+        // Get all the tireList where count equals to UPDATED_COUNT
+        defaultTireShouldNotBeFound("count.in=" + UPDATED_COUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByCountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where count is not null
+        defaultTireShouldBeFound("count.specified=true");
+
+        // Get all the tireList where count is null
+        defaultTireShouldNotBeFound("count.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByCountIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where count greater than or equals to DEFAULT_COUNT
+        defaultTireShouldBeFound("count.greaterOrEqualThan=" + DEFAULT_COUNT);
+
+        // Get all the tireList where count greater than or equals to UPDATED_COUNT
+        defaultTireShouldNotBeFound("count.greaterOrEqualThan=" + UPDATED_COUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTiresByCountIsLessThanSomething() throws Exception {
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+
+        // Get all the tireList where count less than or equals to DEFAULT_COUNT
+        defaultTireShouldNotBeFound("count.lessThan=" + DEFAULT_COUNT);
+
+        // Get all the tireList where count less than or equals to UPDATED_COUNT
+        defaultTireShouldBeFound("count.lessThan=" + UPDATED_COUNT);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllTiresBySalePointIsEqualToSomething() throws Exception {
+        // Initialize the database
+        SalePoint salePoint = SalePointResourceIntTest.createEntity(em);
+        em.persist(salePoint);
+        em.flush();
+        tire.setSalePoint(salePoint);
+        tireRepository.saveAndFlush(tire);
+        Long salePointId = salePoint.getId();
+
+        // Get all the tireList where salePoint equals to salePointId
+        defaultTireShouldBeFound("salePointId.equals=" + salePointId);
+
+        // Get all the tireList where salePoint equals to salePointId + 1
+        defaultTireShouldNotBeFound("salePointId.equals=" + (salePointId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultTireShouldBeFound(String filter) throws Exception {
+        restTireMockMvc.perform(get("/api/tires?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(tire.getId().intValue())))
+            .andExpect(jsonPath("$.[*].mark").value(hasItem(DEFAULT_MARK.toString())))
+            .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
+            .andExpect(jsonPath("$.[*].radius").value(hasItem(DEFAULT_RADIUS.doubleValue())))
+            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
+            .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
+            .andExpect(jsonPath("$.[*].releaseYear").value(hasItem(DEFAULT_RELEASE_YEAR.toString())))
+            .andExpect(jsonPath("$.[*].isStrong").value(hasItem(DEFAULT_IS_STRONG.booleanValue())))
+            .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
+            .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultTireShouldNotBeFound(String filter) throws Exception {
+        restTireMockMvc.perform(get("/api/tires?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingTire() throws Exception {
         // Get the tire
         restTireMockMvc.perform(get("/api/tires/{id}", Long.MAX_VALUE))
@@ -308,8 +865,8 @@ public class TireResourceIntTest {
         assertThat(testTire.getCount()).isEqualTo(UPDATED_COUNT);
 
         // Validate the Tire in Elasticsearch
-//        Tire tireEs = tireSearchRepository.findOne(testTire.getId());
-//        assertThat(tireEs).isEqualToIgnoringGivenFields(testTire);
+        Tire tireEs = tireSearchRepository.findOne(testTire.getId());
+        assertThat(tireEs).isEqualToIgnoringGivenFields(testTire);
     }
 
     @Test

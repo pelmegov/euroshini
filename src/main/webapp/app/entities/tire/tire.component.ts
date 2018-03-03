@@ -30,6 +30,8 @@ export class TireComponent implements OnInit, OnDestroy {
     reverse: any;
     tireCount: number;
 
+    salePointId: number;
+
     constructor(
         private tireService: TireService,
         private parseLinks: JhiParseLinks,
@@ -46,17 +48,23 @@ export class TireComponent implements OnInit, OnDestroy {
             this.reverse = data.pagingParams.ascending;
             this.predicate = data.pagingParams.predicate;
         });
+        this.salePointId = this.activatedRoute.snapshot && this.activatedRoute.snapshot.queryParams['salePointId'] ?
+            this.activatedRoute.snapshot.queryParams['salePointId'] : '';
         this.currentSearch = this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search'] ?
             this.activatedRoute.snapshot.params['search'] : '';
     }
 
     loadAll() {
+        const criteria = this.getSalePointCriteria();
+
         if (this.currentSearch) {
             this.tireService.search({
                 page: this.page - 1,
                 query: this.currentSearch,
                 size: this.itemsPerPage,
-                sort: this.sort()}).subscribe(
+                sort: this.sort(),
+                criteria,
+            }).subscribe(
                     (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
                     (res: ResponseWrapper) => this.onError(res.json)
                 );
@@ -65,12 +73,21 @@ export class TireComponent implements OnInit, OnDestroy {
         this.tireService.query({
             page: this.page - 1,
             size: this.itemsPerPage,
-            sort: this.sort()}).subscribe(
+            sort: this.sort(),
+            criteria,
+        }).subscribe(
             (res: ResponseWrapper) => this.onSuccess(res.json, res.headers),
             (res: ResponseWrapper) => this.onError(res.json)
         );
         this.getTireCount();
     }
+
+    private getSalePointCriteria() {
+        const criteria = [];
+        criteria.push({key: 'salePointId.equals', value: this.salePointId});
+        return criteria;
+    }
+
     loadPage(page: number) {
         if (page !== this.previousPage) {
             this.previousPage = page;
@@ -78,12 +95,14 @@ export class TireComponent implements OnInit, OnDestroy {
         }
     }
     transition() {
+        const criteria = this.getSalePointCriteria();
         this.router.navigate(['/tire'], {queryParams:
             {
                 page: this.page,
                 size: this.itemsPerPage,
                 search: this.currentSearch,
-                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+                sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc'),
+                criteria
             }
         });
         this.loadAll();
@@ -99,11 +118,13 @@ export class TireComponent implements OnInit, OnDestroy {
     }
 
     clear() {
+        const criteria = this.getSalePointCriteria();
         this.page = 0;
         this.currentSearch = '';
         this.router.navigate(['/tire', {
             page: this.page,
-            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc'),
+            criteria
         }]);
         this.loadAll();
     }
@@ -113,10 +134,12 @@ export class TireComponent implements OnInit, OnDestroy {
         }
         this.page = 0;
         this.currentSearch = query;
+        const criteria = this.getSalePointCriteria();
         this.router.navigate(['/tire', {
             search: this.currentSearch,
             page: this.page,
-            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc')
+            sort: this.predicate + ',' + (this.reverse ? 'asc' : 'desc'),
+            criteria
         }]);
         this.loadAll();
     }

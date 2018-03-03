@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface TireRepository extends JpaRepository<Tire, Long> {
+public interface TireRepository extends JpaRepository<Tire, Long>, JpaSpecificationExecutor<Tire> {
     @Query("SELECT SUM(tire.count) from Tire tire")
     int getTireCount();
 }

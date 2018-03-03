@@ -12,6 +12,12 @@ export const createRequestOption = (req?: any): BaseRequestOptions => {
         params.set('query', req.query);
         params.set('filter', req.filter);
 
+        if (req.criteria && req.criteria.length > 0) {
+            req.criteria.forEach((criterion) => {
+                params.set(criterion.key, criterion.value);
+            });
+        }
+
         options.params = params;
     }
     return options;

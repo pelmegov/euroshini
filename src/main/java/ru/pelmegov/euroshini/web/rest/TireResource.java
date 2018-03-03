@@ -1,9 +1,18 @@
 package ru.pelmegov.euroshini.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Streams;
-import com.google.common.primitives.Doubles;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import org.elasticsearch.common.util.CollectionUtils;
+import org.springframework.data.domain.PageImpl;
+import ru.pelmegov.euroshini.domain.Tire;
+import ru.pelmegov.euroshini.service.TireService;
+import ru.pelmegov.euroshini.web.rest.errors.BadRequestAlertException;
+import ru.pelmegov.euroshini.web.rest.util.HeaderUtil;
+import ru.pelmegov.euroshini.web.rest.util.PaginationUtil;
+import ru.pelmegov.euroshini.service.dto.TireDTO;
+import ru.pelmegov.euroshini.service.dto.TireCriteria;
+import ru.pelmegov.euroshini.service.TireQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,18 +22,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.pelmegov.euroshini.domain.Tire;
-import ru.pelmegov.euroshini.repository.TireRepository;
-import ru.pelmegov.euroshini.repository.search.TireSearchRepository;
-import ru.pelmegov.euroshini.service.dto.TireDTO;
-import ru.pelmegov.euroshini.service.mapper.TireMapper;
-import ru.pelmegov.euroshini.web.rest.errors.BadRequestAlertException;
-import ru.pelmegov.euroshini.web.rest.util.HeaderUtil;
-import ru.pelmegov.euroshini.web.rest.util.PaginationUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -39,16 +44,13 @@ public class TireResource {
 
     private static final String ENTITY_NAME = "tire";
 
-    private final TireRepository tireRepository;
+    private final TireService tireService;
 
-    private final TireMapper tireMapper;
+    private final TireQueryService tireQueryService;
 
-    private final TireSearchRepository tireSearchRepository;
-
-    public TireResource(TireRepository tireRepository, TireMapper tireMapper, TireSearchRepository tireSearchRepository) {
-        this.tireRepository = tireRepository;
-        this.tireMapper = tireMapper;
-        this.tireSearchRepository = tireSearchRepository;
+    public TireResource(TireService tireService, TireQueryService tireQueryService) {
+        this.tireService = tireService;
+        this.tireQueryService = tireQueryService;
     }
 
     /**
@@ -65,10 +67,7 @@ public class TireResource {
         if (tireDTO.getId() != null) {
             throw new BadRequestAlertException("A new tire cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Tire tire = tireMapper.toEntity(tireDTO);
-        tire = tireRepository.saveAndFlush(tire);
-        TireDTO result = tireMapper.toDto(tire);
-        tireSearchRepository.save(tire);
+        TireDTO result = tireService.save(tireDTO);
         return ResponseEntity.created(new URI("/api/tires/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -90,10 +89,7 @@ public class TireResource {
         if (tireDTO.getId() == null) {
             return createTire(tireDTO);
         }
-        Tire tire = tireMapper.toEntity(tireDTO);
-        tire = tireRepository.save(tire);
-        TireDTO result = tireMapper.toDto(tire);
-        tireSearchRepository.save(tire);
+        TireDTO result = tireService.save(tireDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, tireDTO.getId().toString()))
             .body(result);
@@ -103,26 +99,16 @@ public class TireResource {
      * GET  /tires : get all the tires.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of tires in body
      */
     @GetMapping("/tires")
     @Timed
-    public ResponseEntity<List<TireDTO>> getAllTires(Pageable pageable) {
-        log.debug("REST request to get a page of Tires");
-        Page<Tire> page = tireRepository.findAll(pageable);
+    public ResponseEntity<List<TireDTO>> getAllTires(TireCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Tires by criteria: {}", criteria);
+        Page<TireDTO> page = tireQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/tires");
-        return new ResponseEntity<>(tireMapper.toDto(page.getContent()), headers, HttpStatus.OK);
-    }
-
-    /**
-     * GET /tires/count : get tires count
-     * @return tires count
-     */
-    @GetMapping("/tires/count")
-    @Timed
-    public ResponseEntity<Integer> getTireCount() {
-        log.debug("REST request to get a tireCount");
-        return new ResponseEntity<>(tireRepository.getTireCount(), HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -135,8 +121,7 @@ public class TireResource {
     @Timed
     public ResponseEntity<TireDTO> getTire(@PathVariable Long id) {
         log.debug("REST request to get Tire : {}", id);
-        Tire tire = tireRepository.findOne(id);
-        TireDTO tireDTO = tireMapper.toDto(tire);
+        TireDTO tireDTO = tireService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(tireDTO));
     }
 
@@ -150,8 +135,7 @@ public class TireResource {
     @Timed
     public ResponseEntity<Void> deleteTire(@PathVariable Long id) {
         log.debug("REST request to delete Tire : {}", id);
-        tireRepository.delete(id);
-        tireSearchRepository.delete(id);
+        tireService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -159,48 +143,31 @@ public class TireResource {
      * SEARCH  /_search/tires?query=:query : search for the tire corresponding
      * to the query.
      *
-     * @param query    the query of the tire search
+     * @param query the query of the tire search
      * @param pageable the pagination information
      * @return the result of the search
      */
     @GetMapping("/_search/tires")
     @Timed
-    public ResponseEntity<List<TireDTO>> searchTires(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<TireDTO>> searchTires(TireCriteria criteria, @RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Tires for query {}", query);
-        Set<String> subQueries = new HashSet<>(Arrays.asList(query.split(" ")));
-
-        Set<Tire> sizeSearch = sizeSearch(subQueries, pageable);
-        Set<Tire> radiusSearch = radiusSearch(subQueries, pageable);
-
-        Page<Tire> page = tireSearchRepository.search(queryStringQuery(Joiner.on(" ").join(subQueries)).escape(true), pageable);
+        List<TireDTO> elasticResult = tireService.search(query);
+        List<TireDTO> tireQueryResult = tireQueryService.findByCriteria(criteria);
+        tireQueryResult.retainAll(elasticResult);
+        Page page = new PageImpl(tireQueryResult, pageable, tireQueryResult.size());
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/tires");
-
-        HashSet<Tire> result = new HashSet<>(page.getContent());
-        result.addAll(radiusSearch);
-        result.addAll(sizeSearch);
-
-        return new ResponseEntity<>(tireMapper.toDto(new ArrayList<>(result)), headers, HttpStatus.OK);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    private Set<Tire> radiusSearch(Set<String> subQueries, Pageable pageable) {
-        Set<Tire> result = new HashSet<>();
-        subQueries.stream()
-            .filter(subQuery -> Doubles.tryParse(subQuery) != null)
-            .forEach(subQuery -> result.addAll(tireSearchRepository.search(matchQuery("radius", subQuery), pageable).getContent()));
-        return result;
-    }
-
-    private Set<Tire> sizeSearch(Set<String> subQueries, Pageable pageable) {
-        Set<Tire> result = new HashSet<>();
-
-        Iterator<String> iterator = subQueries.iterator();
-        Streams.stream(iterator)
-            .filter(subQuery -> subQuery.matches(".*[/].*"))
-            .forEach(subQuery -> {
-                result.addAll(tireSearchRepository.search(matchPhraseQuery("size", subQuery), pageable).getContent());
-                iterator.remove();
-            });
-        return result;
+    /**
+     +     * GET /tires/count : get tires count
+     +     * @return tires count
+     +     */
+    @GetMapping("/tires/count")
+    @Timed
+    public ResponseEntity<Integer> getTireCount() {
+        log.debug("REST request to get a tireCount");
+        return new ResponseEntity<>(1, HttpStatus.OK);
     }
 
 }
