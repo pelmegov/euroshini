@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -112,7 +113,7 @@ public class TireService {
         for (String word : words) {
             String currentWord = word;
             if (StringUtils.isNumeric(word)) {
-                currentWord = "(" + word + " OR " + new Double(word) + ")";
+                currentWord = "(" + word + " OR " + new Double(word) + " OR " + new BigDecimal(word).setScale(2) + ")";
             }
             if (word.contains("/")) {
                 currentWord = "\"" + word.replace("/", "\\/") + "\"";
