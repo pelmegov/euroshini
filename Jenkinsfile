@@ -28,16 +28,6 @@ node {
         }
     }
 
-    stage('frontend tests') {
-        try {
-            sh "./gradlew yarn_test -PnodeInstall --no-daemon"
-        } catch(err) {
-            throw err
-        } finally {
-            junit '**/build/test-results/karma/TESTS-*.xml'
-        }
-    }
-
     stage('packaging') {
         sh "./gradlew bootRepackage -x test -Pprod -PnodeInstall --no-daemon"
         archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
