@@ -3,6 +3,7 @@ package ru.pelmegov.euroshini.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.github.jhipster.service.filter.LongFilter;
 import org.elasticsearch.common.util.CollectionUtils;
 import org.springframework.data.domain.PageImpl;
 import ru.pelmegov.euroshini.domain.Tire;
@@ -165,9 +166,9 @@ public class TireResource {
      +     */
     @GetMapping("/tires/count")
     @Timed
-    public ResponseEntity<Integer> getTireCount() {
+    public ResponseEntity<Integer> getTireCount(TireCriteria criteria) {
         log.debug("REST request to get a tireCount");
-        return new ResponseEntity<>(1, HttpStatus.OK);
+        return new ResponseEntity<>(tireQueryService.findByCriteria(criteria).stream().mapToInt(TireDTO::getCount).sum(), HttpStatus.OK);
     }
 
 }

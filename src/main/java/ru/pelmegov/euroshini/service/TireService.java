@@ -1,6 +1,7 @@
 package ru.pelmegov.euroshini.service;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import ru.pelmegov.euroshini.domain.Tire;
 import ru.pelmegov.euroshini.repository.TireRepository;
 import ru.pelmegov.euroshini.repository.search.TireSearchRepository;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -101,7 +101,24 @@ public class TireService {
     @Transactional(readOnly = true)
     public List<TireDTO> search(String query) {
         log.debug("Request to search for a page of Tires for query {}", query);
-        ArrayList<Tire> tires = Lists.newArrayList(tireSearchRepository.search(queryStringQuery(query)).iterator());
+        query = normalizeQuery(query);
+        List<Tire> tires = Lists.newArrayList(tireSearchRepository.search(queryStringQuery(query)).iterator());
         return tireMapper.toDto(tires);
+    }
+
+    private String normalizeQuery(String query) {
+        StringBuilder resultQuery = new StringBuilder();
+        final String[] words = query.split(" ");
+        for (String word : words) {
+            String currentWord = word;
+            if (StringUtils.isNumeric(word)) {
+                currentWord = "(" + word + " OR " + new Double(word) + ")";
+            }
+            if (word.contains("/")) {
+                currentWord = word.replace("/", "\\/");
+            }
+            resultQuery.append(currentWord).append(" ");
+        }
+        return resultQuery.toString();
     }
 }

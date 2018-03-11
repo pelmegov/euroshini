@@ -18,5 +18,5 @@
 
     <!-- custom initial schema -->
     <include file="config/liquibase/changelog/00000000000001_change_schema.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/00000000000002_import_data.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/00000000000002_import_data.xml" relativeToChangelogFile="false" context="dev,prod"/>
 </databaseChangeLog>

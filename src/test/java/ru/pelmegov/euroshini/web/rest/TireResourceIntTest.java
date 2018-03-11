@@ -10,7 +10,6 @@ import ru.pelmegov.euroshini.repository.search.TireSearchRepository;
 import ru.pelmegov.euroshini.service.dto.TireDTO;
 import ru.pelmegov.euroshini.service.mapper.TireMapper;
 import ru.pelmegov.euroshini.web.rest.errors.ExceptionTranslator;
-import ru.pelmegov.euroshini.service.dto.TireCriteria;
 import ru.pelmegov.euroshini.service.TireQueryService;
 
 import org.junit.Before;
@@ -84,6 +83,8 @@ public class TireResourceIntTest {
 
     private static final Integer DEFAULT_COUNT = 1;
     private static final Integer UPDATED_COUNT = 2;
+
+    private static final String[] ignoringField = {"createdBy", "createdDate", "lastModifiedBy", "lastModifiedDate"};
 
     @Autowired
     private TireRepository tireRepository;
@@ -187,7 +188,7 @@ public class TireResourceIntTest {
 
         // Validate the Tire in Elasticsearch
         Tire tireEs = tireSearchRepository.findOne(testTire.getId());
-        assertThat(tireEs).isEqualToIgnoringGivenFields(testTire);
+        assertThat(tireEs).isEqualToIgnoringGivenFields(testTire, ignoringField);
     }
 
     @Test
@@ -375,45 +376,6 @@ public class TireResourceIntTest {
 
         // Get all the tireList where radius is null
         defaultTireShouldNotBeFound("radius.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllTiresBySizeIsEqualToSomething() throws Exception {
-        // Initialize the database
-        tireRepository.saveAndFlush(tire);
-
-        // Get all the tireList where size equals to DEFAULT_SIZE
-        defaultTireShouldBeFound("size.equals=" + DEFAULT_SIZE);
-
-        // Get all the tireList where size equals to UPDATED_SIZE
-        defaultTireShouldNotBeFound("size.equals=" + UPDATED_SIZE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllTiresBySizeIsInShouldWork() throws Exception {
-        // Initialize the database
-        tireRepository.saveAndFlush(tire);
-
-        // Get all the tireList where size in DEFAULT_SIZE or UPDATED_SIZE
-        defaultTireShouldBeFound("size.in=" + DEFAULT_SIZE + "," + UPDATED_SIZE);
-
-        // Get all the tireList where size equals to UPDATED_SIZE
-        defaultTireShouldNotBeFound("size.in=" + UPDATED_SIZE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllTiresBySizeIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        tireRepository.saveAndFlush(tire);
-
-        // Get all the tireList where size is not null
-        defaultTireShouldBeFound("size.specified=true");
-
-        // Get all the tireList where size is null
-        defaultTireShouldNotBeFound("size.specified=false");
     }
 
     @Test
@@ -866,7 +828,7 @@ public class TireResourceIntTest {
 
         // Validate the Tire in Elasticsearch
         Tire tireEs = tireSearchRepository.findOne(testTire.getId());
-        assertThat(tireEs).isEqualToIgnoringGivenFields(testTire);
+        assertThat(tireEs).isEqualToIgnoringGivenFields(testTire, ignoringField);
     }
 
     @Test
@@ -926,6 +888,79 @@ public class TireResourceIntTest {
             .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
             .andExpect(jsonPath("$.[*].radius").value(hasItem(DEFAULT_RADIUS.doubleValue())))
             .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
+            .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
+            .andExpect(jsonPath("$.[*].releaseYear").value(hasItem(DEFAULT_RELEASE_YEAR.toString())))
+            .andExpect(jsonPath("$.[*].isStrong").value(hasItem(DEFAULT_IS_STRONG.booleanValue())))
+            .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
+            .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)));
+    }
+
+    @Test
+    @Transactional
+    public void searchTireByRadiusInUrl() throws Exception {
+        // Search the tire by String radius and it'is integer
+        checkCustomRadius("/api/_search/tires?query=radius:", "9999");
+    }
+
+    @Test
+    @Transactional
+    public void searchTireByRadiusWithoutUseInUrl() throws Exception {
+        // Search the tire by String radius and it'is integer
+        checkCustomRadius("/api/_search/tires?query=", "9999");
+    }
+
+    private void checkCustomRadius(String checkCustomRadiusString, String radius) throws Exception {
+        // have custom double radius
+        final Double customRadius = new Double(radius);
+
+        tire.setRadius(customRadius);
+
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+        tireSearchRepository.save(tire);
+
+
+        restTireMockMvc.perform(get(checkCustomRadiusString + radius))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(tire.getId().intValue())))
+            .andExpect(jsonPath("$.[*].mark").value(hasItem(DEFAULT_MARK.toString())))
+            .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
+            .andExpect(jsonPath("$.[*].radius").value(hasItem(customRadius)))
+            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
+            .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
+            .andExpect(jsonPath("$.[*].releaseYear").value(hasItem(DEFAULT_RELEASE_YEAR.toString())))
+            .andExpect(jsonPath("$.[*].isStrong").value(hasItem(DEFAULT_IS_STRONG.booleanValue())))
+            .andExpect(jsonPath("$.[*].season").value(hasItem(DEFAULT_SEASON.toString())))
+            .andExpect(jsonPath("$.[*].manufacturer").value(hasItem(DEFAULT_MANUFACTURER.toString())))
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].count").value(hasItem(DEFAULT_COUNT)));
+    }
+
+    @Test
+    @Transactional
+    public void searchTireBySize() throws Exception {
+
+        final String customSize = "165/60";
+
+        tire.setSize(customSize);
+
+        // Initialize the database
+        tireRepository.saveAndFlush(tire);
+        tireSearchRepository.save(tire);
+
+        restTireMockMvc.perform(get("/api/_search/tires?query=" + customSize))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(tire.getId().intValue())))
+            .andExpect(jsonPath("$.[*].mark").value(hasItem(DEFAULT_MARK.toString())))
+            .andExpect(jsonPath("$.[*].model").value(hasItem(DEFAULT_MODEL.toString())))
+            .andExpect(jsonPath("$.[*].radius").value(hasItem(DEFAULT_RADIUS.doubleValue())))
+            .andExpect(jsonPath("$.[*].size").value(hasItem(customSize)))
             .andExpect(jsonPath("$.[*].technology").value(hasItem(DEFAULT_TECHNOLOGY.toString())))
             .andExpect(jsonPath("$.[*].index").value(hasItem(DEFAULT_INDEX.toString())))
             .andExpect(jsonPath("$.[*].releaseYear").value(hasItem(DEFAULT_RELEASE_YEAR.toString())))

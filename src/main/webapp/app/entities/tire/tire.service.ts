@@ -43,8 +43,9 @@ export class TireService {
             .map((res: Response) => this.convertResponse(res));
     }
 
-    getTireCount(): Observable<ResponseWrapper> {
-        return this.http.get(`${this.resourceUrl}/count`)
+    getTireCount(req?: any): Observable<ResponseWrapper> {
+        const options = createRequestOption(req);
+        return this.http.get(`${this.resourceUrl}/count`, options)
             .map((res: Response) => this.simpleConvertResponse(res));
     }
 

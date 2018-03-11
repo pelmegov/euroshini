@@ -109,7 +109,8 @@ export class TireComponent implements OnInit, OnDestroy {
     }
 
     getTireCount() {
-        this.tireService.getTireCount().subscribe(
+        const criteria = this.getSalePointCriteria();
+        this.tireService.getTireCount({criteria}).subscribe(
             (res: ResponseWrapper) => {
                 this.tireCount = res.json;
             },

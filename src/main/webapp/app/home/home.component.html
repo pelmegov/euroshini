@@ -12,14 +12,12 @@
 
                 <hr>
 
-                <a class="btn btn-primary" routerLink="tire" [queryParams]="{salePointId:'1'}">
-                    <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
-                    <span>Склад #1 - Рублёвское шоссе</span>
-                </a>
-                <a class="btn btn-primary" routerLink="tire" [queryParams]="{salePointId:'2'}">
-                    <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
-                    <span>Склад #2 - Ленинградское шоссе</span>
-                </a>
+                <span *ngFor="let salePoint of salepoints;trackBy: trackId">
+                    <a class="btn btn-primary" routerLink="tire" [queryParams]="{salePointId:salePoint.id}">
+                        <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                        <span>Cклад #{{salePoint.id}}: {{salePoint.name}}</span>
+                    </a>
+                </span>
 
             </div>
         </div>
