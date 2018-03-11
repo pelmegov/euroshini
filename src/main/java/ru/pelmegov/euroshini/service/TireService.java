@@ -115,7 +115,7 @@ public class TireService {
                 currentWord = "(" + word + " OR " + new Double(word) + ")";
             }
             if (word.contains("/")) {
-                currentWord = word.replace("/", "\\/");
+                currentWord = "\"" + word.replace("/", "\\/") + "\"";
             }
             resultQuery.append(currentWord).append(" ");
         }
