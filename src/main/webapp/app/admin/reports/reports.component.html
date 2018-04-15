@@ -1,0 +1,93 @@
+<h2>Reports</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <h4>Filter by date</h4>
+        <p class="d-flex">
+            <span class="input-group-addon">from</span>
+            <input type="date" class="form-control" name="start" [(ngModel)]="fromDate"
+                   (ngModelChange)="onChangeDate()" required/>
+            <span class="input-group-addon">to</span>
+            <input type="date" class="form-control" name="end" [(ngModel)]="toDate"
+                   (ngModelChange)="onChangeDate()" required/>
+        </p>
+    </div>
+</div>
+
+<div class="row">
+
+    <!--SALE HISTORY-->
+    <div class="col-md-6" *ngIf="saleHistories">
+        <div class="table-responsive">
+            <h2>Report by sale history</h2>
+            <button type="button" class="btn btn-outline-primary" (click)="isSaleCollapsed = !isSaleCollapsed"
+                    [attr.aria-expanded]="!isSaleCollapsed">
+                {{isSaleCollapsed ? 'Uncollapse' : 'Collapse'}} all sale history for period
+            </button>
+            <table class="table table-striped" [ngbCollapse]="isSaleCollapsed">
+                <tbody>
+                <tr *ngFor="let saleHistory of saleHistories ;trackBy: trackId">
+                    <td><a [routerLink]="['../sale-history', saleHistory.id ]">{{saleHistory.id}}</a></td>
+                    <td>{{saleHistory.count}}</td>
+                    <td>{{saleHistory.price}}</td>
+                    <td>{{saleHistory.sum}}</td>
+                    <td>
+                        <div *ngIf="saleHistory.tire">
+                            <a [routerLink]="['../tire', saleHistory.tire?.id ]">{{saleHistory.tire?.mark}}
+                                {{saleHistory.tire?.model}}</a>
+                        </div>
+                    </td>
+                    <td>{{saleHistory.createdBy}}</td>
+                    <td>{{saleHistory.createdDate | date:'dd/MM/yy HH:mm'}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div>
+                <p>Sale tire count: {{saleTireCounts}}</p>
+
+                <div>
+                    <p>User sale tires:</p>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr *ngFor="let userSale of saleUsers.entries()">
+                                <td>{{userSale[0]}}</td>
+                                <td>{{userSale[1]}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--REVENUE HISTORY-->
+    <div class="col-md-6" *ngIf="revenueHistories">
+        <div class="table-responsive">
+            <h2>Report by revenue history</h2>
+            <button type="button" class="btn btn-outline-primary" (click)="isRevenueCollapsed = !isRevenueCollapsed"
+                    [attr.aria-expanded]="!isRevenueCollapsed">
+                {{isRevenueCollapsed ? 'Uncollapse' : 'Collapse'}} all revenue history for period
+            </button>
+            <table class="table table-striped" [ngbCollapse]="isRevenueCollapsed">
+                <tbody>
+                <tr *ngFor="let revenueHistory of revenueHistories ;trackBy: trackId">
+                    <td><a [routerLink]="['../revenue-history', revenueHistory.id ]">{{revenueHistory.id}}</a></td>
+                    <td>{{revenueHistory.count}}</td>
+                    <td>
+                        <div *ngIf="revenueHistory.tire">
+                            <a [routerLink]="['../tire', revenueHistory.tire?.id ]">{{revenueHistory.tire?.mark}}
+                                {{revenueHistory.tire?.model}}</a>
+                        </div>
+                    </td>
+                    <td>{{revenueHistory.createdBy}}</td>
+                    <td>{{revenueHistory.createdDate | date:'dd/MM/yy HH:mm'}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div>
+                <p>Revenue tire count: {{revenueTireCounts}}</p>
+            </div>
+        </div>
+    </div>
+
+</div>

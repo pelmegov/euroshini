@@ -41,7 +41,7 @@ export class RevenueHistoryPopupService {
 
     revenueHistoryModalRef(component: Component, revenueHistory: RevenueHistory): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
-        modalRef.componentInstance.revenueHistory = revenueHistory;
+        modalRef.componentInstance.revenueHistories = revenueHistory;
         modalRef.result.then((result) => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;

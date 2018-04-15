@@ -1,3 +1,6 @@
+export * from './reports/reports.component';
+export * from './reports/reports.service';
+export * from './reports/reports.route';
 export * from './audits/audits.component';
 export * from './audits/audits.service';
 export * from './audits/audits.route';
