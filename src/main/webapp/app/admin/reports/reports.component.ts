@@ -25,6 +25,7 @@ export class ReportsComponent implements OnInit {
     saleTireCounts: number;
     isSaleCollapsed = true;
     saleUsers: Map<string, number>;
+    saleSum: number;
 
     constructor(private reportsService: ReportsService) {
         this.datePipe = new DatePipe('en');
@@ -50,6 +51,7 @@ export class ReportsComponent implements OnInit {
             this.saleHistories = res.json();
             this.saleTireCounts = this.getTireCountByEntity(this.saleHistories);
             this.putSaleUsers(this.saleHistories);
+            this.putSum(this.saleHistories);
         });
     }
 
@@ -70,6 +72,14 @@ export class ReportsComponent implements OnInit {
             }
             this.saleUsers.set(userName, this.saleUsers.get(userName) + item.count);
         });
+    }
+
+    private putSum(saleHistories: SaleHistory[]) {
+        let sum = 0;
+        saleHistories.forEach((item) => {
+            sum += item.sum;
+        });
+        this.saleSum = sum;
     }
 
     previousMonth() {
